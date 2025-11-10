@@ -52,7 +52,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> getProfile(@PathVariable Long id) {
         try {
             User user = userService.getProfile(id);
