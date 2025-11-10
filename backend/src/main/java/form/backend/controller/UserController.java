@@ -51,4 +51,21 @@ public class UserController {
                     .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
+
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<?> getProfile(@PathVariable Long id) {
+        try {
+            User user = userService.getProfile(id);
+            if (user == null) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "사용자를 찾을 수 없습니다."));
+            }
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
 }
