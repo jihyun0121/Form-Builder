@@ -34,4 +34,25 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public Map<String, Object> login(UserDTO dto) {
+        Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
+        if (optionalUser.isEmpty())
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+
+        User user = optionalUser.get();
+
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 올바르지 않습니다.");
+        }
+
+        String token = jwtoken.createToken(user.getUserId());
+
+        return Map.of(
+                "message", "로그인 성공",
+                "token", token,
+                "user_id", user.getUserId(),
+                "email", user.getEmail()
+        );
+    }
 }

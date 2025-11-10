@@ -35,4 +35,20 @@ public class UserController {
                     .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDTO dto) {
+        try {
+            Map<String, Object> response = userService.login(dto);
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .internalServerError()
+                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+        }
+    }
 }
