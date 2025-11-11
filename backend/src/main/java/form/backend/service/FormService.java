@@ -86,9 +86,9 @@ public class FormService {
 		if (dto.getDescription() != null) {
 			form.setDescription(dto.getDescription());
 		}
-		if (dto.isPublic()) {
-			form.setPublic(dto.isPublic());
-		}
+
+		form.setPublic(dto.isPublic());
+		
 		return formRepository.save(form);
 	}
 
