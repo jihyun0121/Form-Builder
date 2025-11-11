@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class UserDTO {
     @JsonProperty("user_id")
     private Long userId;
-    
+
     private String email;
 
     private String password;
