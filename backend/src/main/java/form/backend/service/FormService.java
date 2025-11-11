@@ -95,7 +95,7 @@ public class FormService {
     @Transactional
     public void deleteForm(Long formId) {
         Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다"));
         formRepository.delete(form);
     }
 }
