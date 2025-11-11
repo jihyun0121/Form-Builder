@@ -14,10 +14,8 @@ public class UserDTO {
     @JsonProperty("user_id")
     private Long userId;
     
-    @JsonProperty("email")
     private String email;
 
-    @JsonProperty("password")
     private String password;
 
     @JsonProperty("created_at")
