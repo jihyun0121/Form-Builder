@@ -44,7 +44,7 @@ public class Question {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> settings;
 
-    @Column(nullable = false)
+    @Column(name = "is_required", nullable = false)
     @JsonProperty("is_required")
     @Builder.Default
     private boolean isRequired = false;
