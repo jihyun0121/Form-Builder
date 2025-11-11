@@ -22,8 +22,7 @@ public class FormDTO {
     private Long userId;
 
     @JsonProperty("is_public")
-    @Builder.Default
-    private boolean isPublic = false;
+    private boolean isPublic;
 
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
