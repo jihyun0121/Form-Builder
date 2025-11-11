@@ -24,7 +24,7 @@ public class UserService {
 
     public User signup(UserDTO dto) {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new IllegalArgumentException("이미 존재하는 이메일입니다");
         }
 
         User user = User.builder()
@@ -38,12 +38,12 @@ public class UserService {
     public Map<String, Object> login(UserDTO dto) {
         Optional<User> optionalUser = userRepository.findByEmail(dto.getEmail());
         if (optionalUser.isEmpty())
-            throw new IllegalArgumentException("존재하지 않는 사용자입니다.");
+            throw new IllegalArgumentException("존재하지 않는 사용자입니다");
 
         User user = optionalUser.get();
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 올바르지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 올바르지 않습니다");
         }
 
         String token = jwtoken.createToken(user.getUserId());
@@ -58,6 +58,6 @@ public class UserService {
 
     public User getProfile(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다"));
     }
 }

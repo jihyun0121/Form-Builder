@@ -12,8 +12,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
     private final UserService userService;
+    
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -32,7 +32,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity
                     .internalServerError()
-                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+                    .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 
@@ -48,7 +48,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity
                     .internalServerError()
-                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+                    .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 
@@ -59,13 +59,13 @@ public class UserController {
             if (user == null) {
                 return ResponseEntity
                         .status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "사용자를 찾을 수 없습니다."));
+                        .body(Map.of("error", "사용자를 찾을 수 없습니다"));
             }
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity
                     .internalServerError()
-                    .body(Map.of("error", "서버 오류가 발생했습니다."));
+                    .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 }
