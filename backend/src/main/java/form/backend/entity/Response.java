@@ -31,7 +31,7 @@ public class Response {
     private Form form;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 }

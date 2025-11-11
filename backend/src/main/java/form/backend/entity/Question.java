@@ -26,11 +26,11 @@ public class Question {
     @JsonProperty("form_id")
     private Form form;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(name = "question_text", nullable = false, columnDefinition = "TEXT")
     @JsonProperty("question_text")
     private String questionText;
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "question_type", nullable = false, length = 30)
     @JsonProperty("question_type")
     private String questionType;
 
@@ -46,6 +46,7 @@ public class Question {
     @Builder.Default
     private boolean isRequired = false;
 
+    @Column(name = "order_num")
     @JsonProperty("order_num")
     private Integer orderNum;
 }

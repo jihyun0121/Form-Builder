@@ -31,13 +31,13 @@ public class Form {
     @JsonProperty("user_id")
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "is_public", nullable = false)
     @JsonProperty("is_public")
     @Builder.Default
     private boolean isPublic = false;
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 }

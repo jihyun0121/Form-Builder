@@ -32,7 +32,7 @@ public class Answer {
     private Question question;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "answer_data", columnDefinition = "jsonb")
     @JsonProperty("answer_data")
     private Map<String, Object> answerData;
 }
