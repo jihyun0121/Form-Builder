@@ -17,6 +17,7 @@ import java.util.Map;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "question_id")
     @JsonProperty("question_id")
     private Long questionId;
 

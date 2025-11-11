@@ -16,6 +16,7 @@ import lombok.*;
 public class Form {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "form_id")
     @JsonProperty("form_id")
     private Long formId;
 

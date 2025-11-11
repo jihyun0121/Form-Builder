@@ -17,6 +17,7 @@ import lombok.*;
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "answer_id")
     @JsonProperty("answer_id")
     private Long answerId;
 
