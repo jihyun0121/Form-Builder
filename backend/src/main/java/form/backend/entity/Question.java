@@ -1,6 +1,8 @@
 package form.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import form.backend.enums.QuestionType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
@@ -30,9 +32,10 @@ public class Question {
     @JsonProperty("question_text")
     private String questionText;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "question_type", nullable = false, length = 30)
     @JsonProperty("question_type")
-    private String questionType;
+    private QuestionType questionType;
 
     @Column(columnDefinition = "TEXT")
     private String description;

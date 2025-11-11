@@ -27,7 +27,7 @@ public class QuestionController {
                 .questionId(question.getQuestionId())
                 .formId(formId)
                 .questionText(question.getQuestionText())
-                .questionType(question.getQuestionType())
+                .questionType(question.getQuestionType().name())
                 .description(question.getDescription())
                 .settings(question.getSettings())
                 .isRequired(question.isRequired())
