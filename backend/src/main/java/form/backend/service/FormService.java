@@ -41,4 +41,18 @@ public class FormService {
 				.build())
 			.toList();
 	}
+
+	public FormDTO getFormById(Long formId) {
+		Form form = formRepository.findById(formId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 설문이 존재하지 않습니다"));
+
+		return FormDTO.builder()
+			.formId(form.getFormId())
+			.title(form.getTitle())
+			.description(form.getDescription())
+			.userId(form.getUser().getUserId())
+			.isPublic(form.isPublic())
+			.createdAt(form.getCreatedAt())
+			.build();
+	}
 }

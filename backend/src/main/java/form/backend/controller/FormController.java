@@ -55,4 +55,14 @@ public class FormController {
                     .body(Map.of("error", "설문을 불러오지 못했습니다."));
         }
     }
+
+    @GetMapping("/{formId}")
+    public ResponseEntity<?> getFormById(@PathVariable Long formId) {
+        try {
+            FormDTO form = formService.getFormById(formId);
+            return ResponseEntity.ok(form);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }
