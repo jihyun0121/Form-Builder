@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ResponseDTO {
-    @JsonProperty("Response_id")
+    @JsonProperty("response_id")
     private Long responseId;
 
     @JsonProperty("user_id")

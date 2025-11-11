@@ -14,7 +14,7 @@ public class AnswerDTO {
     private Long answerId;
 
     @JsonProperty("response_id")
-    private Long responseI;
+    private Long responseId;
 
     @JsonProperty("question_id")
     private Long questionId;

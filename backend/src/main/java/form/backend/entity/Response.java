@@ -16,7 +16,7 @@ import lombok.*;
 public class Response {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty("Response_id")
+    @JsonProperty("response_id")
     private Long responseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
