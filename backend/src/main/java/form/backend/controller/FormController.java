@@ -8,6 +8,7 @@ import form.backend.service.FormService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Locale.Category;
 import java.util.Map;
 
 @RestController
@@ -61,6 +62,16 @@ public class FormController {
         try {
             FormDTO form = formService.getFormById(formId);
             return ResponseEntity.ok(form);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<?> getFormByUserId(@PathVariable Long userId) {
+        try {
+            List<FormDTO> forms = formService.getFormByUserId(userId);
+            return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

@@ -55,4 +55,23 @@ public class FormService {
 			.createdAt(form.getCreatedAt())
 			.build();
 	}
+	
+	public List<FormDTO> getFormByUserId(Long userId) {
+		List<Form> forms = formRepository.findByUser_UserId(userId);
+		
+		if (forms.isEmpty()) {
+			throw new IllegalArgumentException("해당 사용자가 생성한 설문이 없습니다.");
+		}
+
+		return forms.stream()
+			.map(form -> FormDTO.builder()
+				.formId(form.getFormId())
+				.title(form.getTitle())
+				.description(form.getDescription())
+				.userId(form.getUser().getUserId())
+				.isPublic(form.isPublic())
+				.createdAt(form.getCreatedAt())
+				.build())
+			.toList();
+	}
 }
