@@ -3,8 +3,8 @@ package form.backend.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import form.backend.dto.FormDTO;
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Question;
@@ -56,29 +56,38 @@ public class QuestionService {
 				.build())
 			.toList();
 	}
-
-    public Question updateQuestion(Long questionId, QuestionDTO dto) {
+	
+	@Transactional
+	public Question updateQuestion(Long questionId, QuestionDTO dto) {
 		Question question = questionRepository.findById(questionId)
-				.orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다"));
+			.orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다."));
+		
+		Long formId = question.getForm().getFormId();
+		
+		if (dto.getOrderNum() != null && !dto.getOrderNum().equals(question.getOrderNum())) {
+			int oldOrder = question.getOrderNum();
+			int newOrder = dto.getOrderNum();
 
-		if (dto.getQuestionText() != null && !dto.getQuestionText().isBlank()) {
+			if (newOrder > oldOrder) {
+				questionRepository.shiftOrderDown(formId, oldOrder, newOrder);
+			}
+			else {
+				questionRepository.shiftOrderUp(formId, newOrder, oldOrder);
+			}
+
+			question.setOrderNum(newOrder);
+		}
+
+		if (dto.getQuestionText() != null && !dto.getQuestionText().isBlank())
 			question.setQuestionText(dto.getQuestionText());
-		}
-		if (dto.getQuestionType() != null && !dto.getQuestionType().isBlank()) {
-			question.setQuestionType(QuestionType.valueOf(dto.getQuestionType().toUpperCase()));
-        }
-		if (dto.getDescription() != null) {
+		if (dto.getDescription() != null)
 			question.setDescription(dto.getDescription());
-		}
-		if (dto.getSettings() != null) {
+		if (dto.getSettings() != null)
 			question.setSettings(dto.getSettings());
-		}
-		if (dto.getOrderNum() != null) {
-			question.setOrderNum(dto.getOrderNum());
-		}
+		if (dto.getQuestionType() != null)
+			question.setQuestionType(QuestionType.valueOf(dto.getQuestionType().toUpperCase()));
 
 		question.setRequired(dto.isRequired());
-        
-        return questionRepository.save(question);
-    }
+		return questionRepository.save(question);
+	}
 }

@@ -2,7 +2,6 @@ package form.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import form.backend.dto.FormDTO;
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Question;
 import form.backend.service.QuestionService;
@@ -39,7 +38,7 @@ public class QuestionController {
                 .build();
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(Map.of("message", "문항이 생성되었습니다", "question", newQuestion));
+                    .body(Map.of("message", "질문이 생성되었습니다", "question", newQuestion));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
@@ -72,7 +71,7 @@ public class QuestionController {
                     .isRequired(updatedQuestion.isRequired())
                     .orderNum(updatedQuestion.getOrderNum())
                     .build();
-            return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "question", response));
+            return ResponseEntity.ok(Map.of("message", "질문이 수정되었습니다", "question", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
