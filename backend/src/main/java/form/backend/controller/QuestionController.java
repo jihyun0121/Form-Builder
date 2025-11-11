@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 public class QuestionController {
     private final QuestionService questionService;
 
-    @PostMapping("/forms/{formId}")
+    @PostMapping("/forms/{formId}/questions")
     public ResponseEntity<?> addQuestion(@PathVariable Long formId, @RequestBody QuestionDTO dto) {
         try {
             Question question = questionService.addQuestion(formId, dto);
