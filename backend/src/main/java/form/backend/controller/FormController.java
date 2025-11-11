@@ -44,4 +44,15 @@ public class FormController {
                     .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> getAllForms() {
+        try {
+            List<FormDTO> forms = formService.getAllForms();
+            return ResponseEntity.ok(forms);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "설문을 불러오지 못했습니다."));
+        }
+    }
 }

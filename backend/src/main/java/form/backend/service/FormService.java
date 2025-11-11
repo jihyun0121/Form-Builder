@@ -28,4 +28,17 @@ public class FormService {
 
 		return formRepository.save(form);
 	}
+
+	public List<FormDTO> getAllForms() {
+		return formRepository.findAll().stream()
+			.map(form -> FormDTO.builder()
+				.formId(form.getFormId())
+				.title(form.getTitle())
+				.description(form.getDescription())
+				.userId(form.getUser().getUserId())
+				.isPublic(form.isPublic())
+				.createdAt(form.getCreatedAt())
+				.build())
+			.toList();
+	}
 }
