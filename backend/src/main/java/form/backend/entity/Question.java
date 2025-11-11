@@ -25,7 +25,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_id")
     @JsonProperty("form_id")
-    private Form formId;
+    private Form form;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     @JsonProperty("question_text")

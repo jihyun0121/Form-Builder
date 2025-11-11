@@ -28,7 +28,7 @@ public class Form {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonProperty("user_id")
-    private User userId;
+    private User user;
 
     @Column(nullable = false)
     @JsonProperty("is_public")
