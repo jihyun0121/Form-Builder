@@ -1,6 +1,7 @@
 package form.backend.service;
 
 import org.springframework.stereotype.Service;
+
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Question;
@@ -29,6 +30,31 @@ public class QuestionService {
                 .orderNum(dto.getOrderNum())
                 .build();
 
+        return questionRepository.save(question);
+    }
+    
+    public Question updateQuestion(Long questionId, QuestionDTO dto) {
+		Question question = questionRepository.findById(questionId)
+				.orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다"));
+
+		if (dto.getQuestionText() != null && !dto.getQuestionText().isBlank()) {
+			question.setQuestionText(dto.getQuestionText());
+		}
+		if (dto.getQuestionType() != null && !dto.getQuestionType().isBlank()) {
+			question.setQuestionType(QuestionType.valueOf(dto.getQuestionType().toUpperCase()));
+        }
+		if (dto.getDescription() != null) {
+			question.setDescription(dto.getDescription());
+		}
+		if (dto.getSettings() != null) {
+			question.setSettings(dto.getSettings());
+		}
+		if (dto.getOrderNum() != null) {
+			question.setOrderNum(dto.getOrderNum());
+		}
+
+		question.setRequired(dto.isRequired());
+        
         return questionRepository.save(question);
     }
 }

@@ -7,6 +7,7 @@ import form.backend.entity.Question;
 import form.backend.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.Map;
@@ -41,6 +42,28 @@ public class QuestionController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
+    
+    @PutMapping("/questions/{questionId}")
+    public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionDTO dto) {
+        try {
+            Question updatedQuestion = questionService.updateQuestion(questionId, dto);
+            QuestionDTO response = QuestionDTO.builder()
+                    .questionId(updatedQuestion.getQuestionId())
+                    .formId(updatedQuestion.getForm().getFormId())
+                    .questionText(updatedQuestion.getQuestionText())
+                    .questionType(updatedQuestion.getQuestionType().name())
+                    .description(updatedQuestion.getDescription())
+                    .settings(updatedQuestion.getSettings())
+                    .isRequired(updatedQuestion.isRequired())
+                    .orderNum(updatedQuestion.getOrderNum())
+                    .build();
+            return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "question", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 }
