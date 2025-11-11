@@ -1,9 +1,9 @@
 package form.backend.service;
 
 import java.util.List;
-import java.util.Locale.Category;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import form.backend.dto.FormDTO;
 import form.backend.entity.Form;
 import form.backend.entity.User;
@@ -19,7 +19,7 @@ public class FormService {
 
 	public Form createForm(FormDTO dto) {
 		User user = userRepository.findById(dto.getUserId())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
 
 		Form form = Form.builder()
 			.title(dto.getTitle())
@@ -61,7 +61,7 @@ public class FormService {
 		List<Form> forms = formRepository.findByUser_UserId(userId);
 		
 		if (forms.isEmpty()) {
-			throw new IllegalArgumentException("해당 사용자가 생성한 설문이 없습니다.");
+			throw new IllegalArgumentException("해당 사용자가 생성한 설문이 없습니다");
 		}
 
 		return forms.stream()
@@ -78,7 +78,7 @@ public class FormService {
 	
 	public Form updateForm(Long formId, FormDTO dto) {
 		Form form = formRepository.findById(formId)
-				.orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다."));
+				.orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다"));
 
 		if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
 			form.setTitle(dto.getTitle());
@@ -91,4 +91,11 @@ public class FormService {
 		}
 		return formRepository.save(form);
 	}
+
+    @Transactional
+    public void deleteForm(Long formId) {
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 카테고리를 찾을 수 없습니다"));
+        formRepository.delete(form);
+    }
 }

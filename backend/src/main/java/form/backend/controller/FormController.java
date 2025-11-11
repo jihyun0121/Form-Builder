@@ -8,7 +8,6 @@ import form.backend.service.FormService;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
-import java.util.Locale.Category;
 import java.util.Map;
 
 @RestController
@@ -85,6 +84,18 @@ public class FormController {
                     .createdAt(updatedForm.getCreatedAt())
                     .build();
             return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "form", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
+
+    @DeleteMapping("/{formId}")
+    public ResponseEntity<?> deleteForm(@PathVariable Long formId) {
+        try {
+            formService.deleteForm(formId);
+            return ResponseEntity.ok(Map.of("message", "설문이 삭제되었습니다", "form_id", formId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
