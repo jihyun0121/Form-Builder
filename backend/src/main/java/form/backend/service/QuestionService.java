@@ -1,7 +1,10 @@
 package form.backend.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import form.backend.dto.FormDTO;
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Question;
@@ -32,7 +35,28 @@ public class QuestionService {
 
         return questionRepository.save(question);
     }
-    
+
+	public List<QuestionDTO> getQuestionByFormId(Long formId) {
+		List<Question> questions = questionRepository.findByForm_FormId(formId);
+		
+		if (questions.isEmpty()) {
+			throw new IllegalArgumentException("해당 설문의 질문이 없습니다");
+		}
+
+		return questions.stream()
+			.map(question -> QuestionDTO.builder()
+                .questionId(question.getQuestionId())
+				.formId(question.getForm().getFormId())
+				.questionText(question.getQuestionText())
+				.questionType(question.getQuestionType().name())
+				.description(question.getDescription())
+				.isRequired(question.isRequired())
+                .settings(question.getSettings())
+                .orderNum(question.getOrderNum())
+				.build())
+			.toList();
+	}
+
     public Question updateQuestion(Long questionId, QuestionDTO dto) {
 		Question question = questionRepository.findById(questionId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다"));
