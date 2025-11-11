@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class UserDTO {
-
     @JsonProperty("user_id")
     private Long userId;
     

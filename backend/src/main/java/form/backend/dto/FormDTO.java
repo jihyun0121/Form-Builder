@@ -10,7 +10,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class FormDTO {
-
     @JsonProperty("form_id")
     private Long formId;
 

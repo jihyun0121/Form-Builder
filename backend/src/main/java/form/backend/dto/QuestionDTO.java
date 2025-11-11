@@ -1,9 +1,7 @@
 package form.backend.dto;
 
 import java.util.Map;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.*;
 
 @Getter
@@ -33,5 +31,4 @@ public class QuestionDTO {
 
     @JsonProperty("order_num")
     private Integer orderNum;
-
 }

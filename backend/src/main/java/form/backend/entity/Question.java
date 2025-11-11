@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
-
 import java.util.Map;
 
 @Entity
@@ -16,7 +15,6 @@ import java.util.Map;
 @Builder
 @Table(name = "\"Question\"")
 public class Question {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("question_id")
