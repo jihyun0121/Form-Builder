@@ -7,6 +7,7 @@ import form.backend.entity.Form;
 import form.backend.service.FormService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,10 +20,20 @@ public class FormController {
     @PostMapping
     public ResponseEntity<?> createForm(@RequestBody FormDTO dto) {
         try {
-            Form newForm = formService.createForm(dto);
+            Form form = formService.createForm(dto);
+
+            FormDTO newForm = FormDTO.builder()
+                .formId(form.getFormId())
+                .title(form.getTitle())
+                .description(form.getDescription())
+                .userId(form.getUser().getUserId())
+                .isPublic(form.isPublic())
+                .createdAt(form.getCreatedAt())
+                .build();
+            
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(Map.of("message", "설문지 생성 성공", "form", newForm));
+                    .body(Map.of("message", "설문 생성 성공", "form", newForm));
         } catch (IllegalArgumentException e) {
             return ResponseEntity
                     .badRequest()
