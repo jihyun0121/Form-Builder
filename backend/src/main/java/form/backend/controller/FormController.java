@@ -36,13 +36,9 @@ public class FormController {
                     .status(HttpStatus.CREATED)
                     .body(Map.of("message", "설문 생성 성공", "form", newForm));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("error", e.getMessage()));
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity
-                    .internalServerError()
-                    .body(Map.of("error", "서버 오류가 발생했습니다"));
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 
@@ -52,8 +48,7 @@ public class FormController {
             List<FormDTO> forms = formService.getAllForms();
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError()
-                    .body(Map.of("error", "설문을 불러오지 못했습니다."));
+            return ResponseEntity.internalServerError().body(Map.of("error", "설문을 불러오지 못했습니다"));
         }
     }
 
@@ -74,6 +69,26 @@ public class FormController {
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    
+    @PutMapping("/{formId}")
+    public ResponseEntity<?> updateForm(@PathVariable Long formId, @RequestBody FormDTO dto) {
+        try {
+            Form updatedForm = formService.updateForm(formId, dto);
+            FormDTO response = FormDTO.builder()
+                    .formId(updatedForm.getFormId())
+                    .title(updatedForm.getTitle())
+                    .description(updatedForm.getDescription())
+                    .userId(updatedForm.getUser().getUserId())
+                    .isPublic(updatedForm.isPublic())
+                    .createdAt(updatedForm.getCreatedAt())
+                    .build();
+            return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "form", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 }

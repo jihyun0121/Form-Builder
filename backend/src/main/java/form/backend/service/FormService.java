@@ -1,6 +1,7 @@
 package form.backend.service;
 
 import java.util.List;
+import java.util.Locale.Category;
 
 import org.springframework.stereotype.Service;
 import form.backend.dto.FormDTO;
@@ -73,5 +74,21 @@ public class FormService {
 				.createdAt(form.getCreatedAt())
 				.build())
 			.toList();
+	}
+	
+	public Form updateForm(Long formId, FormDTO dto) {
+		Form form = formRepository.findById(formId)
+				.orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다."));
+
+		if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
+			form.setTitle(dto.getTitle());
+		}
+		if (dto.getDescription() != null) {
+			form.setDescription(dto.getDescription());
+		}
+		if (dto.isPublic()) {
+			form.setPublic(dto.isPublic());
+		}
+		return formRepository.save(form);
 	}
 }
