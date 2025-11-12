@@ -41,4 +41,14 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/responses/{responseId}/answers")
+    public ResponseEntity<?> getAnswerByResponseId(@PathVariable Long responseId) {
+        try {
+            List<AnswerDTO> question = answerService.getAnswerByResponseId(responseId);
+            return ResponseEntity.ok(question);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

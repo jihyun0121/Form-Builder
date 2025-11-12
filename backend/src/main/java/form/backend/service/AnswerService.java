@@ -66,4 +66,21 @@ public class AnswerService {
                 .build())
             .toList();
 	}
+
+	public List<AnswerDTO> getAnswerByResponseId(Long responseId) {
+		List<Answer> answers = answerRepository.findByResponse_ResponseId(responseId);
+
+        if (answers.isEmpty()) {
+			throw new IllegalArgumentException("해당 질문이 없습니다");
+		}
+
+		return answers.stream()
+			.map(answer -> AnswerDTO.builder()
+                .answerId(answer.getAnswerId())
+                .responseId(answer.getResponse().getResponseId())
+                .questionId(answer.getQuestion().getQuestionId())
+                .answerData(answer.getAnswerData())
+                .build())
+            .toList();
+	}
 }
