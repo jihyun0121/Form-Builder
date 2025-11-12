@@ -1,24 +1,22 @@
 package form.backend.security;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+
+import javax.crypto.SecretKey;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
-import javax.crypto.SecretKey;
-import java.io.IOException;
-import java.util.List;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
-
     private final String secretKey;
 
     public JwtAuthFilter(String secretKey) {

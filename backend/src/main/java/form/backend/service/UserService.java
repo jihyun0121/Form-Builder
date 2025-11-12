@@ -1,18 +1,17 @@
 package form.backend.service;
 
+import java.util.*;
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import form.backend.dto.UserDTO;
 import form.backend.entity.User;
 import form.backend.repository.UserRepository;
 import form.backend.security.JWToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final JWToken jwtoken;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

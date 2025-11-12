@@ -1,7 +1,9 @@
 package form.backend.dto;
 
-import java.util.Map;
+import java.util.*;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
 
 @Getter

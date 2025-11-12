@@ -1,20 +1,19 @@
 package form.backend.controller;
 
-import org.springframework.web.bind.annotation.*;
+import java.util.*;
+
 import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
+
 import form.backend.dto.FormDTO;
 import form.backend.entity.Form;
 import form.backend.service.FormService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/forms")
 @RequiredArgsConstructor
 public class FormController {
-
     private final FormService formService;
 
     @PostMapping
@@ -30,7 +29,7 @@ public class FormController {
                 .isPublic(form.isPublic())
                 .createdAt(form.getCreatedAt())
                 .build();
-            
+
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(Map.of("message", "설문 생성 성공", "form", newForm));
@@ -70,7 +69,7 @@ public class FormController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
-    
+
     @PutMapping("/{formId}")
     public ResponseEntity<?> updateForm(@PathVariable Long formId, @RequestBody FormDTO dto) {
         try {

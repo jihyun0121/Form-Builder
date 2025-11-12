@@ -1,15 +1,16 @@
 package form.backend.service;
 
-import java.util.List;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Question;
 import form.backend.enums.QuestionType;
 import form.backend.repository.FormRepository;
 import form.backend.repository.QuestionRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,7 +56,7 @@ public class QuestionService {
 				.build())
 			.toList();
 	}
-	
+
 	@Transactional
 	public Question updateQuestion(Long questionId, QuestionDTO dto) {
 		Question question = questionRepository.findById(questionId)

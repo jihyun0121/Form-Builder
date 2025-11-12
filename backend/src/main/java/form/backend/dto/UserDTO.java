@@ -1,8 +1,10 @@
 package form.backend.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.*;
 
 @Getter
 @Setter
