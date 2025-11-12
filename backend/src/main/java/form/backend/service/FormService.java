@@ -57,7 +57,7 @@ public class FormService {
 			.createdAt(form.getCreatedAt())
 			.build();
 	}
-	
+
 	public List<FormDTO> getFormByUserId(Long userId) {
 		List<Form> forms = formRepository.findByUser_UserId(userId);
 		

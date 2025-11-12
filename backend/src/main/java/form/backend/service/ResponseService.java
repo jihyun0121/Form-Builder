@@ -4,7 +4,6 @@ import java.util.*;
 
 import org.springframework.stereotype.Service;
 
-import form.backend.dto.FormDTO;
 import form.backend.dto.ResponseDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Response;
@@ -55,7 +54,7 @@ public class ResponseService {
 
 	public ResponseDTO getResponseById(Long responseId) {
 		Response response = responseRepository.findById(responseId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 설문이 존재하지 않습니다"));
+			.orElseThrow(() -> new IllegalArgumentException("해당 응답이 존재하지 않습니다"));
 
 		return ResponseDTO.builder()
             .responseId(response.getResponseId())
@@ -63,5 +62,22 @@ public class ResponseService {
 			.userId(response.getUser().getUserId())
 			.createdAt(response.getCreatedAt())
 			.build();
+	}
+
+	public List<ResponseDTO> getResponseByUserId(Long userId) {
+		List<Response> responses = responseRepository.findByUser_UserId(userId);
+		
+		if (responses.isEmpty()) {
+			throw new IllegalArgumentException("해당 사용자가 답변항 응답이 없습니다");
+		}
+
+		return responses.stream()
+			.map(response -> ResponseDTO.builder()
+                .responseId(response.getResponseId())
+                .formId(response.getForm().getFormId())
+                .userId(response.getUser().getUserId())
+                .createdAt(response.getCreatedAt())
+				.build())
+			.toList();
 	}
 }

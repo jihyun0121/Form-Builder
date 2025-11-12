@@ -5,7 +5,6 @@ import java.util.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import form.backend.dto.FormDTO;
 import form.backend.dto.ResponseDTO;
 import form.backend.entity.Response;
 import form.backend.service.ResponseService;
@@ -52,6 +51,16 @@ public class ResponseController {
         try {
             ResponseDTO response = responseService.getResponseById(responseId);
             return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @GetMapping("/users/{userId}/responses")
+    public ResponseEntity<?> getResponseByUserId(@PathVariable Long userId) {
+        try {
+            List<ResponseDTO> forms = responseService.getResponseByUserId(userId);
+            return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

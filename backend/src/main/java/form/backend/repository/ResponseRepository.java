@@ -10,4 +10,5 @@ import form.backend.entity.Response;
 @Repository
 public interface ResponseRepository extends JpaRepository<Response, Long> {
     List<Response>findByForm_FormId(Long formId);
+    List<Response>findByUser_UserId(Long userId);
 }
