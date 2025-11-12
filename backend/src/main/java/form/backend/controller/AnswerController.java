@@ -20,7 +20,7 @@ public class AnswerController {
         try {
             int count = answerService.saveAnswers(responseId, answers);
             return ResponseEntity.status(HttpStatus.CREATED) .body(Map.of(
-                "message", "답변이 성공적으로 저장되었습니다.",
+                "message", "답변이 성공적으로 저장되었습니다",
                 "response_id", responseId,
                 "saved_count", count
             ));
@@ -28,7 +28,7 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError() .body(Map.of("error", "서버 오류가 발생했습니다."));
+            return ResponseEntity.internalServerError() .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 
@@ -49,6 +49,23 @@ public class AnswerController {
             return ResponseEntity.ok(question);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @PutMapping("responses/{responseId}/answers")
+    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestBody List<AnswerDTO> dtos) {
+        try {
+            int count = answerService.updateAnswers(responseId, dtos);
+            return ResponseEntity.ok(Map.of(
+                    "message", "답변이 수정되었습니다",
+                    "response_id", responseId,
+                    "updated_count", count
+            ));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 }

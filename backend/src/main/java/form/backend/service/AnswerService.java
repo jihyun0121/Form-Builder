@@ -25,13 +25,13 @@ public class AnswerService {
     @Transactional
     public int saveAnswers(Long responseId, List<AnswerDTO> dtos) {
         Response response = responseRepository.findById(responseId)
-            .orElseThrow(() -> new IllegalArgumentException("응답 세션(response)을 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("응답 세션(response)을 찾을 수 없습니다"));
 
         List<Answer> answersToSave = new ArrayList<>();
 
         for (AnswerDTO dto : dtos) {
             Question question = questionRepository.findById(dto.getQuestionId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다. (ID: " + dto.getQuestionId() + ")"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다 (ID: " + dto.getQuestionId() + ")"));
 
             QuestionType type = question.getQuestionType();
             Map<String, Object> answerData = dto.getAnswerData();
@@ -83,4 +83,43 @@ public class AnswerService {
                 .build())
             .toList();
 	}
+
+    @Transactional
+    public int updateAnswers(Long responseId, List<AnswerDTO> dtos) {
+        Response response = responseRepository.findById(responseId)
+            .orElseThrow(() -> new IllegalArgumentException("응답 세션(Response)을 찾을 수 없습니다"));
+
+        int updatedCount = 0;
+
+        for (AnswerDTO dto : dtos) {
+            Question question = questionRepository.findById(dto.getQuestionId())
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다 (ID: " + dto.getQuestionId() + ")"));
+
+            Optional<Answer> optionalAnswer = answerRepository
+                    .findByResponse_ResponseIdAndQuestion_QuestionId(responseId, dto.getQuestionId());
+
+            if (optionalAnswer.isEmpty()) {
+                Answer newAnswer = Answer.builder()
+                    .response(response)
+                    .question(question)
+                    .answerData(dto.getAnswerData())
+                    .build();
+                answerRepository.save(newAnswer);
+            } else {
+                Answer existing = optionalAnswer.get();
+                existing.setAnswerData(dto.getAnswerData());
+            }
+            updatedCount++;
+
+            Answer answer = optionalAnswer.get();
+
+            QuestionType type = question.getQuestionType();
+            type.validateAnswer(dto.getAnswerData());
+
+            answer.setAnswerData(dto.getAnswerData());
+            updatedCount++;
+        }
+
+        return updatedCount;
+    }
 }
