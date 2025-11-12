@@ -3,6 +3,7 @@ package form.backend.service;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
@@ -10,7 +11,6 @@ import form.backend.entity.Question;
 import form.backend.enums.QuestionType;
 import form.backend.repository.FormRepository;
 import form.backend.repository.QuestionRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
