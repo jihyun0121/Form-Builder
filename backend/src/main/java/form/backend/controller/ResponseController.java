@@ -65,4 +65,16 @@ public class ResponseController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @DeleteMapping("/responses/{responseId}")
+    public ResponseEntity<?> deleteResponse(@PathVariable Long responseId){
+        try {
+            responseService.deleteResponse(responseId);
+            return ResponseEntity.ok(Map.of("message", "응답이 삭제되었습니다", "response_id", responseId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
 }

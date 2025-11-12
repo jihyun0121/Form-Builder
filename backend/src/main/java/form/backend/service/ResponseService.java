@@ -3,6 +3,7 @@ package form.backend.service;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import form.backend.dto.ResponseDTO;
 import form.backend.entity.Form;
@@ -79,5 +80,12 @@ public class ResponseService {
                 .createdAt(response.getCreatedAt())
 				.build())
 			.toList();
+	}
+
+    @Transactional
+	public void deleteResponse(Long responseId) {
+        Response response = responseRepository.findById(responseId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 응답을 찾을 수 없습니다"));
+        responseRepository.delete(response);
 	}
 }
