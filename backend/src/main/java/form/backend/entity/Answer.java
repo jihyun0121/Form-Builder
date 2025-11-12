@@ -3,9 +3,9 @@ package form.backend.entity;
 import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-
 import io.hypersistence.utils.hibernate.type.json.JsonType;
+import org.hibernate.annotations.Type;
+
 import jakarta.persistence.*;
 import lombok.*;
 
