@@ -1,7 +1,10 @@
 package form.backend.service;
 
+import java.util.*;
+
 import org.springframework.stereotype.Service;
 
+import form.backend.dto.FormDTO;
 import form.backend.dto.ResponseDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Response;
@@ -32,4 +35,21 @@ public class ResponseService {
 
         return responseRepository.save(response);
     }
+
+	public List<ResponseDTO> getResponseByFormId(Long formId) {
+		List<Response> responses = responseRepository.findByForm_FormId(formId);
+
+		if (responses.isEmpty()) {
+			throw new IllegalArgumentException("해당 설문의 응답이 없습니다");
+		}
+
+		return responses.stream()
+			.map(response -> ResponseDTO.builder()
+                .responseId(response.getResponseId())
+				.formId(response.getForm().getFormId())
+				.userId(response.getUser().getUserId())
+                .createdAt(response.getCreatedAt())
+				.build())
+			.toList();
+	}
 }

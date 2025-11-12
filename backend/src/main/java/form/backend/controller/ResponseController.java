@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
+import form.backend.dto.FormDTO;
 import form.backend.dto.ResponseDTO;
 import form.backend.entity.Response;
 import form.backend.service.ResponseService;
@@ -33,6 +34,16 @@ public class ResponseController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
+
+    @GetMapping("/forms/{formId}/responses")
+    public ResponseEntity<?> getResponseByFormId(@PathVariable Long formId) {
+        try {
+            List<ResponseDTO> responses = responseService.getResponseByFormId(formId);
+            return ResponseEntity.ok(responses);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }
