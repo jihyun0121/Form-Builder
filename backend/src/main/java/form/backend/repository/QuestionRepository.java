@@ -18,4 +18,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long>{
     @Modifying
     @Query("UPDATE Question q SET q.orderNum = q.orderNum + 1 WHERE q.form.formId = :formId AND q.orderNum >= :newOrder AND q.orderNum < :oldOrder")
     void shiftOrderUp(@Param("formId") Long formId, @Param("newOrder") int newOrder, @Param("oldOrder") int oldOrder);
+
+    @Modifying
+    @Query("UPDATE Question q SET q.orderNum = q.orderNum - 1 WHERE q.form.formId = :formId AND q.orderNum > :deletedOrder")
+    void shiftOrderAfterDelete(@Param("formId") Long formId, @Param("deletedOrder") int deletedOrder);
 }

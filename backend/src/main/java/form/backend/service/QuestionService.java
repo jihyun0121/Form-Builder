@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Form;
 import form.backend.entity.Question;
@@ -89,5 +88,16 @@ public class QuestionService {
 
 		question.setRequired(dto.isRequired());
 		return questionRepository.save(question);
+	}
+
+    @Transactional
+	public void deleteQuestion(Long questionId) {
+		Question question = questionRepository.findById(questionId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 질문을 찾을 수 없습니다."));
+
+		Long formId = question.getForm().getFormId();
+		int deletedOrder = question.getOrderNum();
+		questionRepository.delete(question);
+		questionRepository.shiftOrderAfterDelete(formId, deletedOrder);
 	}
 }

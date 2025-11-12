@@ -1,7 +1,6 @@
 package form.backend.controller;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import form.backend.dto.QuestionDTO;
 import form.backend.entity.Question;
 import form.backend.service.QuestionService;
@@ -9,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
@@ -72,6 +72,18 @@ public class QuestionController {
                     .orderNum(updatedQuestion.getOrderNum())
                     .build();
             return ResponseEntity.ok(Map.of("message", "질문이 수정되었습니다", "question", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
+
+    @DeleteMapping("/questions/{questionId}")
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId){
+        try {
+            questionService.deleteQuestion(questionId);
+            return ResponseEntity.ok(Map.of("message", "질문이 삭제되었습니다", "question_id", questionId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
