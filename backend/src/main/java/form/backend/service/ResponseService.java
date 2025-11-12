@@ -52,4 +52,16 @@ public class ResponseService {
 				.build())
 			.toList();
 	}
+
+	public ResponseDTO getResponseById(Long responseId) {
+		Response response = responseRepository.findById(responseId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 설문이 존재하지 않습니다"));
+
+		return ResponseDTO.builder()
+            .responseId(response.getResponseId())
+			.formId(response.getForm().getFormId())
+			.userId(response.getUser().getUserId())
+			.createdAt(response.getCreatedAt())
+			.build();
+	}
 }

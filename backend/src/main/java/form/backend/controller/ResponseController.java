@@ -46,4 +46,14 @@ public class ResponseController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/responses/{responseId}")
+    public ResponseEntity<?> getResponseById(@PathVariable Long responseId) {
+        try {
+            ResponseDTO response = responseService.getResponseById(responseId);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }
