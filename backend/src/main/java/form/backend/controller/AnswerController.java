@@ -31,4 +31,14 @@ public class AnswerController {
             return ResponseEntity.internalServerError() .body(Map.of("error", "서버 오류가 발생했습니다."));
         }
     }
+
+    @GetMapping("/questions/{questionId}/answers")
+    public ResponseEntity<?> getAnswerByQuestionId(@PathVariable Long questionId) {
+        try {
+            List<AnswerDTO> question = answerService.getAnswerByQuestionId(questionId);
+            return ResponseEntity.ok(question);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
 }

@@ -43,12 +43,27 @@ public class AnswerService {
                     .question(question)
                     .answerData(answerData)
                     .build();
-
             answersToSave.add(answer);
         }
-
         answerRepository.saveAll(answersToSave);
 
         return answersToSave.size();
     }
+
+	public List<AnswerDTO> getAnswerByQuestionId(Long questionId) {
+		List<Answer> answers = answerRepository.findByQuestion_QuestionId(questionId);
+
+        if (answers.isEmpty()) {
+			throw new IllegalArgumentException("해당 질문이 없습니다");
+		}
+
+		return answers.stream()
+			.map(answer -> AnswerDTO.builder()
+                .answerId(answer.getAnswerId())
+                .responseId(answer.getResponse().getResponseId())
+                .questionId(answer.getQuestion().getQuestionId())
+                .answerData(answer.getAnswerData())
+                .build())
+            .toList();
+	}
 }
