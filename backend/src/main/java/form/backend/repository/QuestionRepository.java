@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import form.backend.entity.Question;
 
 @Repository
-public interface QuestionRepository extends JpaRepository<Question, Long>{
+public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question>findByForm_FormId(Long formId);
     
     @Modifying
