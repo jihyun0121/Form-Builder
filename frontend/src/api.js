@@ -37,7 +37,7 @@ export const updateForm = (formId, dto) => api.put(`/forms/${formId}`, dto);
 export const deleteForm = (formId) => api.delete(`/forms/${formId}`);
 
 export const addQuestion = (formId, dto) => api.post(`/forms/${formId}/questions`, dto);
-export const getQuestionsByForm = (formId) => api.get(`/forms/${formId}/question`);
+export const getQuestionsByForm = (formId) => api.get(`/forms/${formId}/questions`);
 export const updateQuestion = (questionId, dto) => api.put(`/questions/${questionId}`, dto);
 export const deleteQuestion = (questionId) => api.delete(`/questions/${questionId}`);
 
