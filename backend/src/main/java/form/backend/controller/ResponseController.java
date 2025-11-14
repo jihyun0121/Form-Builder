@@ -24,6 +24,7 @@ public class ResponseController {
                 .responseId(response.getResponseId())
                 .formId(formId)
                 .userId(response.getUser().getUserId())
+                .createdAt(response.getCreatedAt())
                 .build();
 
             return ResponseEntity.status(HttpStatus.CREATED)

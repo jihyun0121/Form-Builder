@@ -36,12 +36,8 @@ public class ResponseService {
         return responseRepository.save(response);
     }
 
-	public List<ResponseDTO> getResponseByFormId(Long formId) {
-		List<Response> responses = responseRepository.findByForm_FormId(formId);
-
-		if (responses.isEmpty()) {
-			throw new IllegalArgumentException("해당 설문의 응답이 없습니다");
-		}
+    public List<ResponseDTO> getResponseByFormId(Long formId) {
+        List<Response> responses = responseRepository.findByForm_FormId(formId);
 
 		return responses.stream()
 			.map(response -> ResponseDTO.builder()
@@ -65,12 +61,8 @@ public class ResponseService {
 			.build();
 	}
 
-	public List<ResponseDTO> getResponseByUserId(Long userId) {
-		List<Response> responses = responseRepository.findByUser_UserId(userId);
-		
-		if (responses.isEmpty()) {
-			throw new IllegalArgumentException("해당 사용자가 답변항 응답이 없습니다");
-		}
+    public List<ResponseDTO> getResponseByUserId(Long userId) {
+        List<Response> responses = responseRepository.findByUser_UserId(userId);
 
 		return responses.stream()
 			.map(response -> ResponseDTO.builder()
@@ -83,9 +75,8 @@ public class ResponseService {
 	}
 
     @Transactional
-	public void deleteResponse(Long responseId) {
-        Response response = responseRepository.findById(responseId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 응답을 찾을 수 없습니다"));
+    public void deleteResponse(Long responseId) {
+        Response response = responseRepository.findById(responseId).orElseThrow(() -> new IllegalArgumentException("해당 응답을 찾을 수 없습니다"));
         responseRepository.delete(response);
-	}
+    }
 }
