@@ -6,6 +6,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import form.backend.dto.FormDTO;
+import form.backend.dto.FormStructureDTO;
 import form.backend.entity.Form;
 import form.backend.service.FormService;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,21 @@ public class FormController {
             return ResponseEntity.ok(forms);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+    @GetMapping("/{formId}/structure")
+    public ResponseEntity<?> getFormStructure(@PathVariable Long formId) {
+        try {
+            FormStructureDTO structure = formService.getFormStructure(formId);
+            return ResponseEntity.ok(structure);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
 
