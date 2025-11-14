@@ -29,6 +29,11 @@ public class Question {
     @JsonProperty("form_id")
     private Form form;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "section_id")
+    @JsonProperty("section_id")
+    private Section section;
+
     @Column(name = "question_text", nullable = false, columnDefinition = "TEXT")
     @JsonProperty("question_text")
     private String questionText;

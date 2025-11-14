@@ -18,6 +18,9 @@ public class QuestionDTO {
     @JsonProperty("form_id")
     private Long formId;
 
+    @JsonProperty("section_id")
+    private Long sectionId;
+
     @JsonProperty("question_text")
     private String questionText;
 
