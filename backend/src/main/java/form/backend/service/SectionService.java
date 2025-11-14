@@ -3,6 +3,7 @@ package form.backend.service;
 import java.util.*;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import form.backend.dto.SectionDTO;
 import form.backend.entity.Form;
@@ -32,7 +33,6 @@ public class SectionService {
 
     public List<SectionDTO> getFormStructure(Long formId) {
         List<Section> sections = sectionRepository.findByForm_FormIdOrderByOrderNumAsc(formId);
-
         return sections.stream()
                 .map(s -> SectionDTO.builder()
                         .sectionId(s.getSectionId())
@@ -42,5 +42,18 @@ public class SectionService {
                         .orderNum(s.getOrderNum())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public Section updateSection(Long sectionId, SectionDTO dto) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new IllegalArgumentException("섹션을 찾을 수 없습니다."));
+        if (dto.getTitle() != null)
+            section.setTitle(dto.getTitle());
+        if (dto.getDescription() != null)
+            section.setDescription(dto.getDescription());
+        if (dto.getOrderNum() != null)
+            section.setOrderNum(dto.getOrderNum());
+        return section;
     }
 }

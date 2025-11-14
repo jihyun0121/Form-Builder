@@ -44,4 +44,24 @@ public class SectionController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PutMapping("/sections/{sectionId}")
+    public ResponseEntity<?> updateSection(@PathVariable Long sectionId, @RequestBody SectionDTO dto) {
+        try {
+            Section updatedSection = sectionService.updateSection(sectionId, dto);
+
+            SectionDTO response = SectionDTO.builder()
+                    .sectionId(updatedSection.getSectionId())
+                    .formId(updatedSection.getForm().getFormId())
+                    .title(updatedSection.getTitle())
+                    .description(updatedSection.getDescription())
+                    .orderNum(updatedSection.getOrderNum())
+                    .build();
+            return ResponseEntity.ok(Map.of("message", "섹션이 수정되었습니다", "section", response));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
 }
