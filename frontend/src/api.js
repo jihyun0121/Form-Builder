@@ -25,31 +25,37 @@ api.interceptors.response.use(
     }
 );
 
-export const signup = (dto) => api.post(`/users/signup`, dto);
-export const login = (dto) => api.post(`/users/login`, dto);
-export const getProfile = (userId) => api.get(`/users/${userId}`);
+export const aa = () => api.bb(`/users/signup`);
+export const aa = () => api.bb(`/users/login`);
+export const aa = () => api.bb(`/users/${userId}`);
 
-export const createForm = (dto) => api.post(`/forms`, dto);
-export const getAllForms = () => api.get(`/forms`);
-export const getFormById = (formId) => api.get(`/forms/${formId}`);
-export const getFormsByUser = (userId) => api.get(`/forms/user/${userId}`);
-export const updateForm = (formId, dto) => api.put(`/forms/${formId}`, dto);
-export const deleteForm = (formId) => api.delete(`/forms/${formId}`);
+export const aa = () => api.bb(`/forms`);
+export const aa = () => api.bb(`/forms`);
+export const aa = () => api.bb(`/forms/${formId}`);
+export const aa = () => api.bb(`/forms/user/${userId}`);
+export const aa = () => api.bb(`/forms/${formId}`);
+export const aa = () => api.bb(`/forms/${formId}`);
+export const aa = () => api.bb(`/forms/${formId}/structure`);
 
-export const addQuestion = (formId, dto) => api.post(`/forms/${formId}/questions`, dto);
-export const getQuestionsByForm = (formId) => api.get(`/forms/${formId}/questions`);
-export const updateQuestion = (questionId, dto) => api.put(`/questions/${questionId}`, dto);
-export const deleteQuestion = (questionId) => api.delete(`/questions/${questionId}`);
+export const aa = () => api.bb(`/forms/${formId}/sections`);
+export const aa = () => api.bb(`/sections/${sectionId}`);
+export const aa = () => api.bb(`/sections/${sectionId}`);
+export const aa = () => api.bb(`/forms/${formId}/sections`);
 
-export const addResponse = (formId, dto) => api.post(`/forms/${formId}/responses`, dto);
-export const getResponsesByForm = (formId) => api.get(`/forms/${formId}/responses`);
-export const getResponseById = (responseId) => api.get(`/responses/${responseId}`);
-export const getResponsesByUser = (userId) => api.get(`/users/${userId}/responses`);
-export const deleteResponse = (responseId) => api.delete(`/responses/${responseId}`);
+export const aa = () => api.bb(`/forms/${formId}/question`);
+export const aa = () => api.bb(`/forms/${formId}/questions`);
+export const aa = () => api.bb(`/questions/${questionId}`);
+export const aa = () => api.bb(`/questions/${questionId}`);
 
-export const addAnswers = (responseId, dtos) => api.post(`/responses/${responseId}/answers`, dtos);
-export const getAnswersByQuestion = (questionId) => api.get(`/questions/${questionId}/answers`);
-export const getAnswersByResponse = (responseId) => api.get(`/responses/${responseId}/answers`);
-export const updateAnswers = (responseId, dtos) => api.put(`/responses/${responseId}/answers`, dtos);
+export const aa = () => api.bb(`/forms/${formId}/responses`);
+export const aa = () => api.bb(`/forms/${formId}/responses`);
+export const aa = () => api.bb(`/responses/${responseId}`);
+export const aa = () => api.bb(`/users/${userId}/responses`);
+export const aa = () => api.bb(`/responses/${responseId}`);
+
+export const aa = () => api.bb(`/responses/${responseId}/answers`);
+export const aa = () => api.bb(`/questions/${questionId}/answers`);
+export const aa = () => api.bb(`/responses/${responseId}/answers`);
+export const aa = () => api.bb(`/responses/${responseId}/answers`);
 
 export default api;

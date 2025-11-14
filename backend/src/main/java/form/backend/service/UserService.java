@@ -9,22 +9,18 @@ import form.backend.dto.UserDTO;
 import form.backend.entity.User;
 import form.backend.repository.UserRepository;
 import form.backend.security.JWToken;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JWToken jwtoken;
+    private final JWToken jwtToken;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserService(UserRepository userRepository, JWToken jwtoken) {
-        this.userRepository = userRepository;
-        this.jwtoken = jwtoken;
-    }
-
     public User signup(UserDTO dto) {
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
+        if (userRepository.findByEmail(dto.getEmail()).isPresent())
             throw new IllegalArgumentException("이미 존재하는 이메일입니다");
-        }
 
         User user = User.builder()
                 .email(dto.getEmail())
@@ -41,11 +37,10 @@ public class UserService {
 
         User user = optionalUser.get();
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword()))
             throw new IllegalArgumentException("비밀번호가 올바르지 않습니다");
-        }
 
-        String token = jwtoken.createToken(user.getUserId());
+        String token = jwtToken.createToken(user.getUserId());
 
         return Map.of(
                 "message", "로그인 성공",

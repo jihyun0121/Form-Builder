@@ -8,15 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import form.backend.dto.UserDTO;
 import form.backend.entity.User;
 import form.backend.service.UserService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody UserDTO dto) {
@@ -52,19 +50,16 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getProfile(@PathVariable Long id) {
+    @GetMapping("/{userId}")
+    public ResponseEntity<?> getProfile(@PathVariable Long userId) {
         try {
-            User user = userService.getProfile(id);
-            if (user == null) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("error", "사용자를 찾을 수 없습니다"));
-            }
+            User user = userService.getProfile(userId);
             return ResponseEntity.ok(user);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity
-                    .internalServerError()
+            return ResponseEntity.internalServerError()
                     .body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
