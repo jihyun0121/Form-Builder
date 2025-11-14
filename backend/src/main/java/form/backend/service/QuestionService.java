@@ -24,13 +24,10 @@ public class QuestionService {
 
     public Question addQuestion(Long formId, QuestionDTO dto) {
         Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다"));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."));
 
-        Section section = null;
-        if (dto.getSectionId() != null) {
-            section = sectionRepository.findById(dto.getSectionId())
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 섹션입니다"));
-        }
+        Section section = sectionRepository.findById(dto.getSectionId())
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 섹션입니다."));
 
         Question question = Question.builder()
                 .form(form)
@@ -42,6 +39,7 @@ public class QuestionService {
                 .isRequired(dto.isRequired())
                 .orderNum(dto.getOrderNum())
                 .build();
+
         return questionRepository.save(question);
     }
 
