@@ -1,0 +1,37 @@
+package form.backend.controller;
+
+import java.util.*;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import form.backend.dto.SectionDTO;
+import form.backend.entity.Section;
+import form.backend.service.SectionService;
+import lombok.*;
+
+@RestController
+@RequiredArgsConstructor
+public class SectionController {
+    private final SectionService sectionService;
+
+    @PostMapping("/forms/{formId}/sections")
+    public ResponseEntity<?> addSection(@PathVariable Long formId, @RequestBody SectionDTO dto) {
+        try {
+            Section section = sectionService.addSection(formId, dto);
+            SectionDTO newSection = SectionDTO.builder()
+                    .sectionId(section.getSectionId())
+                    .formId(formId)
+                    .title(section.getTitle())
+                    .description(section.getDescription())
+                    .orderNum(section.getOrderNum())
+                    .build();
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "섹션이 생성되었습니다", "section", newSection));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
+}
