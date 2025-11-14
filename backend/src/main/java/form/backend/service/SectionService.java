@@ -1,5 +1,7 @@
 package form.backend.service;
 
+import java.util.*;
+
 import org.springframework.stereotype.Service;
 
 import form.backend.dto.SectionDTO;
@@ -26,5 +28,19 @@ public class SectionService {
                 .orderNum(dto.getOrderNum())
                 .build();
         return sectionRepository.save(section);
+    }
+
+    public List<SectionDTO> getFormStructure(Long formId) {
+        List<Section> sections = sectionRepository.findByForm_FormIdOrderByOrderNumAsc(formId);
+
+        return sections.stream()
+                .map(s -> SectionDTO.builder()
+                        .sectionId(s.getSectionId())
+                        .formId(s.getForm().getFormId())
+                        .title(s.getTitle())
+                        .description(s.getDescription())
+                        .orderNum(s.getOrderNum())
+                        .build())
+                .toList();
     }
 }
