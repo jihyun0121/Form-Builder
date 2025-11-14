@@ -64,4 +64,16 @@ public class SectionController {
             return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
         }
     }
+
+    @DeleteMapping("/sections/{sectionId}")
+    public ResponseEntity<?> deleteSection(@PathVariable Long sectionId) {
+        try {
+            sectionService.deleteSection(sectionId);
+            return ResponseEntity.ok(Map.of("message", "섹션이 삭제되었습니다", "section_id", sectionId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+        }
+    }
 }

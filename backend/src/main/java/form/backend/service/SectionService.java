@@ -47,7 +47,7 @@ public class SectionService {
     @Transactional
     public Section updateSection(Long sectionId, SectionDTO dto) {
         Section section = sectionRepository.findById(sectionId)
-                .orElseThrow(() -> new IllegalArgumentException("섹션을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("섹션을 찾을 수 없습니다"));
         if (dto.getTitle() != null)
             section.setTitle(dto.getTitle());
         if (dto.getDescription() != null)
@@ -55,5 +55,12 @@ public class SectionService {
         if (dto.getOrderNum() != null)
             section.setOrderNum(dto.getOrderNum());
         return section;
+    }
+
+    @Transactional
+    public void deleteSection(Long sectionId) {
+        Section section = sectionRepository.findById(sectionId)
+                .orElseThrow(() -> new IllegalArgumentException("섹션을 찾을 수 없습니다"));
+        sectionRepository.delete(section);
     }
 }
