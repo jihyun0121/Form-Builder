@@ -2,8 +2,7 @@ package form.backend.controller;
 
 import java.util.*;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import form.backend.dto.AnswerDTO;
@@ -19,24 +18,22 @@ public class AnswerController {
     public ResponseEntity<?> addAnswers(@PathVariable Long responseId, @RequestBody List<AnswerDTO> answers) {
         try {
             int count = answerService.saveAnswers(responseId, answers);
-            return ResponseEntity.status(HttpStatus.CREATED) .body(Map.of(
+            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "message", "답변이 성공적으로 저장되었습니다",
                 "response_id", responseId,
                 "saved_count", count
             ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError() .body(Map.of("error", "서버 오류가 발생했습니다"));
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
     @GetMapping("/questions/{questionId}/answers")
     public ResponseEntity<?> getAnswerByQuestionId(@PathVariable Long questionId) {
         try {
-            List<AnswerDTO> question = answerService.getAnswerByQuestionId(questionId);
-            return ResponseEntity.ok(question);
+            return ResponseEntity.ok(answerService.getAnswerByQuestionId(questionId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -45,27 +42,23 @@ public class AnswerController {
     @GetMapping("/responses/{responseId}/answers")
     public ResponseEntity<?> getAnswerByResponseId(@PathVariable Long responseId) {
         try {
-            List<AnswerDTO> question = answerService.getAnswerByResponseId(responseId);
-            return ResponseEntity.ok(question);
+            return ResponseEntity.ok(answerService.getAnswerByResponseId(responseId));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
     @PutMapping("responses/{responseId}/answers")
-    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestBody List<AnswerDTO> dtos) {
+    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestBody Long userId, @RequestBody List<AnswerDTO> dtos) {
         try {
-            int count = answerService.updateAnswers(responseId, dtos);
+            int count = answerService.updateAnswers(responseId, userId, dtos);
             return ResponseEntity.ok(Map.of(
                     "message", "답변이 수정되었습니다",
                     "response_id", responseId,
                     "updated_count", count
             ));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.internalServerError().body(Map.of("error", "서버 오류가 발생했습니다"));
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 }

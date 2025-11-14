@@ -9,7 +9,7 @@ import form.backend.entity.Answer;
 
 @Repository
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
-    List<Answer>findByQuestion_QuestionId(Long questionId);
-    List<Answer>findByResponse_ResponseId(Long responseId);
+    List<Answer> findByQuestion_QuestionId(Long questionId);
+    List<Answer> findByResponse_ResponseId(Long responseId);
     Optional<Answer> findByResponse_ResponseIdAndQuestion_QuestionId(Long responseId, Long questionId);
 }

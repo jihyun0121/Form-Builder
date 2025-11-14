@@ -27,35 +27,29 @@ public class AnswerService {
         Response response = responseRepository.findById(responseId)
             .orElseThrow(() -> new IllegalArgumentException("응답 세션(response)을 찾을 수 없습니다"));
 
-        List<Answer> answersToSave = new ArrayList<>();
+        List<Answer> answerList = new ArrayList<>();
 
         for (AnswerDTO dto : dtos) {
             Question question = questionRepository.findById(dto.getQuestionId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다 (ID: " + dto.getQuestionId() + ")"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다 (ID: " + dto.getQuestionId() + ")"));
 
             QuestionType type = question.getQuestionType();
-            Map<String, Object> answerData = dto.getAnswerData();
-
-            type.validateAnswer(answerData);
+            type.validateAnswer(dto.getAnswerData());
 
             Answer answer = Answer.builder()
                     .response(response)
                     .question(question)
-                    .answerData(answerData)
+                    .answerData(dto.getAnswerData())
                     .build();
-            answersToSave.add(answer);
+            answerList.add(answer);
         }
-        answerRepository.saveAll(answersToSave);
 
-        return answersToSave.size();
+        answerRepository.saveAll(answerList);
+        return answerList.size();
     }
 
-	public List<AnswerDTO> getAnswerByQuestionId(Long questionId) {
-		List<Answer> answers = answerRepository.findByQuestion_QuestionId(questionId);
-
-        if (answers.isEmpty()) {
-			throw new IllegalArgumentException("해당 질문이 없습니다");
-		}
+    public List<AnswerDTO> getAnswerByQuestionId(Long questionId) {
+        List<Answer> answers = answerRepository.findByQuestion_QuestionId(questionId);
 
 		return answers.stream()
 			.map(answer -> AnswerDTO.builder()
@@ -67,12 +61,8 @@ public class AnswerService {
             .toList();
 	}
 
-	public List<AnswerDTO> getAnswerByResponseId(Long responseId) {
-		List<Answer> answers = answerRepository.findByResponse_ResponseId(responseId);
-
-        if (answers.isEmpty()) {
-			throw new IllegalArgumentException("해당 질문이 없습니다");
-		}
+    public List<AnswerDTO> getAnswerByResponseId(Long responseId) {
+        List<Answer> answers = answerRepository.findByResponse_ResponseId(responseId);
 
 		return answers.stream()
 			.map(answer -> AnswerDTO.builder()
@@ -85,41 +75,38 @@ public class AnswerService {
 	}
 
     @Transactional
-    public int updateAnswers(Long responseId, List<AnswerDTO> dtos) {
+    public int updateAnswers(Long responseId, Long requesterUserId, List<AnswerDTO> dtos) {
         Response response = responseRepository.findById(responseId)
-            .orElseThrow(() -> new IllegalArgumentException("응답 세션(Response)을 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException("응답 세션을 찾을 수 없습니다"));
 
-        int updatedCount = 0;
+        if (!response.getUser().getUserId().equals(requesterUserId))
+            throw new IllegalArgumentException("응답 작성자만 답변을 수정할 수 있습니다");
+
+        int count = 0;
 
         for (AnswerDTO dto : dtos) {
             Question question = questionRepository.findById(dto.getQuestionId())
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문입니다 (ID: " + dto.getQuestionId() + ")"));
 
-            Optional<Answer> optionalAnswer = answerRepository
-                    .findByResponse_ResponseIdAndQuestion_QuestionId(responseId, dto.getQuestionId());
-
-            if (optionalAnswer.isEmpty()) {
-                Answer newAnswer = Answer.builder()
-                    .response(response)
-                    .question(question)
-                    .answerData(dto.getAnswerData())
-                    .build();
-                answerRepository.save(newAnswer);
-            } else {
-                Answer existing = optionalAnswer.get();
-                existing.setAnswerData(dto.getAnswerData());
-            }
-            updatedCount++;
-
-            Answer answer = optionalAnswer.get();
-
             QuestionType type = question.getQuestionType();
             type.validateAnswer(dto.getAnswerData());
 
-            answer.setAnswerData(dto.getAnswerData());
-            updatedCount++;
-        }
+            Optional<Answer> optional = answerRepository
+                    .findByResponse_ResponseIdAndQuestion_QuestionId(responseId, dto.getQuestionId());
 
-        return updatedCount;
+            if (optional.isPresent()) {
+                Answer existing = optional.get();
+                existing.setAnswerData(dto.getAnswerData());
+            } else {
+                Answer newAnswer = Answer.builder()
+                        .response(response)
+                        .question(question)
+                        .answerData(dto.getAnswerData())
+                        .build();
+                answerRepository.save(newAnswer);
+            }
+            count++;
+        }
+        return count;
     }
 }
