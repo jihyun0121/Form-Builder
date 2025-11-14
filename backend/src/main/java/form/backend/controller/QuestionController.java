@@ -15,22 +15,22 @@ import lombok.RequiredArgsConstructor;
 public class QuestionController {
     private final QuestionService questionService;
 
-    @PostMapping("/forms/{formId}/questions")
+    @PostMapping("/forms/{formId}/question")
     public ResponseEntity<?> addQuestion(@PathVariable Long formId, @RequestBody QuestionDTO dto) {
         try {
             Question question = questionService.addQuestion(formId, dto);
 
             QuestionDTO newQuestion = QuestionDTO.builder()
-                .questionId(question.getQuestionId())
-                .formId(formId)
-                .sectionId(question.getSection() != null ? question.getSection().getSectionId() : null)
-                .questionText(question.getQuestionText())
-                .questionType(question.getQuestionType().name())
-                .description(question.getDescription())
-                .settings(question.getSettings())
-                .isRequired(question.isRequired())
-                .orderNum(question.getOrderNum())
-                .build();
+                    .questionId(question.getQuestionId())
+                    .formId(formId)
+                    .sectionId(question.getSection() != null ? question.getSection().getSectionId() : null)
+                    .questionText(question.getQuestionText())
+                    .questionType(question.getQuestionType().name())
+                    .description(question.getDescription())
+                    .settings(question.getSettings())
+                    .isRequired(question.isRequired())
+                    .orderNum(question.getOrderNum())
+                    .build();
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("message", "질문이 생성되었습니다", "question", newQuestion));
         } catch (IllegalArgumentException e) {
@@ -41,7 +41,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping("/forms/{formId}/question")
+    @GetMapping("/forms/{formId}/questions")
     public ResponseEntity<?> getQuestionByFormId(@PathVariable Long formId) {
         try {
             List<QuestionDTO> questions = questionService.getQuestionByFormId(formId);
@@ -75,7 +75,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId){
+    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
         try {
             questionService.deleteQuestion(questionId);
             return ResponseEntity.ok(Map.of("message", "문항이 삭제되었습니다", "question_id", questionId));
