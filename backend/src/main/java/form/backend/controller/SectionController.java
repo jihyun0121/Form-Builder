@@ -36,9 +36,9 @@ public class SectionController {
     }
 
     @GetMapping("/forms/{formId}/sections")
-    public ResponseEntity<?> getFormStructure(@PathVariable Long formId) {
+    public ResponseEntity<?> getFormSection(@PathVariable Long formId) {
         try {
-            List<SectionDTO> sections = sectionService.getFormStructure(formId);
+            List<SectionDTO> sections = sectionService.getFormSection(formId);
             return ResponseEntity.ok(sections);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
