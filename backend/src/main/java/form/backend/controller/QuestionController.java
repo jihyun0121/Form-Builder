@@ -23,6 +23,7 @@ public class QuestionController {
             QuestionDTO newQuestion = QuestionDTO.builder()
                 .questionId(question.getQuestionId())
                 .formId(formId)
+                .sectionId(question.getSection() != null ? question.getSection().getSectionId() : null)
                 .questionText(question.getQuestionText())
                 .questionType(question.getQuestionType().name())
                 .description(question.getDescription())
@@ -30,7 +31,6 @@ public class QuestionController {
                 .isRequired(question.isRequired())
                 .orderNum(question.getOrderNum())
                 .build();
-
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("message", "질문이 생성되었습니다", "question", newQuestion));
         } catch (IllegalArgumentException e) {
@@ -54,18 +54,19 @@ public class QuestionController {
     @PutMapping("/questions/{questionId}")
     public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionDTO dto) {
         try {
-            Question updatedQuestion = questionService.updateQuestion(questionId, dto);
+            Question updated = questionService.updateQuestion(questionId, dto);
             QuestionDTO response = QuestionDTO.builder()
-                    .questionId(updatedQuestion.getQuestionId())
-                    .formId(updatedQuestion.getForm().getFormId())
-                    .questionText(updatedQuestion.getQuestionText())
-                    .questionType(updatedQuestion.getQuestionType().name())
-                    .description(updatedQuestion.getDescription())
-                    .settings(updatedQuestion.getSettings())
-                    .isRequired(updatedQuestion.isRequired())
-                    .orderNum(updatedQuestion.getOrderNum())
+                    .questionId(updated.getQuestionId())
+                    .formId(updated.getForm().getFormId())
+                    .sectionId(updated.getSection() != null ? updated.getSection().getSectionId() : null)
+                    .questionText(updated.getQuestionText())
+                    .questionType(updated.getQuestionType().name())
+                    .description(updated.getDescription())
+                    .settings(updated.getSettings())
+                    .isRequired(updated.isRequired())
+                    .orderNum(updated.getOrderNum())
                     .build();
-            return ResponseEntity.ok(Map.of("message", "질문이 수정되었습니다", "question", response));
+            return ResponseEntity.ok(Map.of("message", "문항이 수정되었습니다", "question", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public class QuestionController {
     public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId){
         try {
             questionService.deleteQuestion(questionId);
-            return ResponseEntity.ok(Map.of("message", "질문이 삭제되었습니다", "question_id", questionId));
+            return ResponseEntity.ok(Map.of("message", "문항이 삭제되었습니다", "question_id", questionId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
