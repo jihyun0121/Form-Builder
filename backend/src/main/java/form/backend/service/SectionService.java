@@ -31,7 +31,7 @@ public class SectionService {
         return sectionRepository.save(section);
     }
 
-    public List<SectionDTO> getFormStructure(Long formId) {
+    public List<SectionDTO> getFormSection(Long formId) {
         List<Section> sections = sectionRepository.findByForm_FormIdOrderByOrderNumAsc(formId);
         return sections.stream()
                 .map(s -> SectionDTO.builder()
