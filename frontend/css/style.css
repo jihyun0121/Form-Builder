@@ -1,0 +1,68 @@
+body {
+    background-color: #f5f5f5;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.main-container {
+    max-width: 960px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.template-card {
+    border: 2px dashed #cfd8dc;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    height: 100%;
+}
+
+.template-card:hover {
+    border-color: #0d6efd;
+    background-color: #f8fbff;
+    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.08);
+}
+
+.template-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d6efd, #42a5f5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+}
+
+.recent-card {
+    transition: box-shadow 0.15s ease-in-out, transform 0.1s ease-in-out;
+    cursor: pointer;
+}
+
+.recent-card:hover {
+    box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+}
+
+.recent-title {
+    font-weight: 600;
+}
+
+.muted-text {
+    color: #757575;
+    font-size: 0.85rem;
+}
+
+.no-result {
+    color: #9e9e9e;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1.5rem 0;
+}
