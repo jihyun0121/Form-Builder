@@ -56,6 +56,6 @@ export const deleteResponse = (responseId) => api.DELETE(`/responses/${responseI
 export const addAnswers = (responseId, dto) => api.POST(`/responses/${responseId}/answers`, dto);
 export const getAnswerByQuestionId = (questionId) => api.GET(`/questions/${questionId}/answers`);
 export const getAnswerByResponseId = (responseId) => api.GET(`/responses/${responseId}/answers`);
-export const updateAnswers = (responseId, dto) => api.PUT(`/responses/${responseId}/answers`, dto);
+export const updateAnswers = (responseId, userId, dto) => api.PUT(`/responses/${responseId}/answers?userId=${userId}`, dto);
 
 export default api;

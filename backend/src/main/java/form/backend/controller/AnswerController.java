@@ -19,10 +19,9 @@ public class AnswerController {
         try {
             int count = answerService.saveAnswers(responseId, answers);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "message", "답변이 성공적으로 저장되었습니다",
-                "response_id", responseId,
-                "saved_count", count
-            ));
+                    "message", "답변이 성공적으로 저장되었습니다",
+                    "response_id", responseId,
+                    "saved_count", count));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest()
@@ -49,14 +48,14 @@ public class AnswerController {
     }
 
     @PutMapping("responses/{responseId}/answers")
-    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestBody Long userId, @RequestBody List<AnswerDTO> dtos) {
+    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestParam Long userId,
+            @RequestBody List<AnswerDTO> dtos) {
         try {
             int count = answerService.updateAnswers(responseId, userId, dtos);
             return ResponseEntity.ok(Map.of(
                     "message", "답변이 수정되었습니다",
                     "response_id", responseId,
-                    "updated_count", count
-            ));
+                    "updated_count", count));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
