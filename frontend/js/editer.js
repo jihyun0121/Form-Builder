@@ -86,16 +86,6 @@ function getAllBlocks() {
     return [...blocksContainer.children].filter((b) => b.dataset.blockType !== "title");
 }
 
-function getSectionIdOfBlock(block) {
-    if (block.dataset.blockType === "section") return block.dataset.sectionId;
-    let prev = block.previousElementSibling;
-    while (prev) {
-        if (prev.dataset.blockType === "section") return prev.dataset.sectionId;
-        prev = prev.previousElementSibling;
-    }
-    return "1";
-}
-
 function getBlocksBySection(sectionId) {
     const all = getAllBlocks();
     const arr = [];
@@ -440,24 +430,25 @@ function regenerateOrderNumbers() {
 
     const firstSection = blocks.find((b) => b.dataset.blockType === "section");
     if (!firstSection) return;
+
     firstSectionId = firstSection.dataset.sectionId;
 
-    let sectionMap = {};
+    const sectionMap = {};
     let currentSection = firstSectionId;
 
     for (const b of blocks) {
         if (b.dataset.blockType === "section") {
             currentSection = b.dataset.sectionId;
-            sectionMap[currentSection] = 1;
+            if (!sectionMap[currentSection]) sectionMap[currentSection] = 1;
             continue;
         }
 
         if (b.dataset.blockType === "question") {
-            if (!sectionMap[currentSection]) {
-                sectionMap[currentSection] = 1;
-            }
+            if (!sectionMap[currentSection]) sectionMap[currentSection] = 1;
+            const order = sectionMap[currentSection]++;
 
-            b.dataset.orderNum = sectionMap[currentSection]++;
+            b.dataset.sectionId = currentSection;
+            b.dataset.orderNum = String(order);
         }
     }
 }
@@ -641,12 +632,12 @@ function createSectionBlock(initial = {}) {
     card.innerHTML = `
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <input type="text" class="form-question-editable form-input-base form-control form-control-sm question-text-input me-2" placeholder="섹션 제목" value="${initial.title || ""}"/>
+                <input type="text" class="form-question-editable form-input-base form-control form-control-sm section-title-input me-2" placeholder="섹션 제목" value="${initial.title || ""}"/>
                 <button class="btn btn-outline-danger btn-sm btn-delete-section">
                     <i class="bi bi-trash"></i>
                 </button>
             </div>
-            <div class="mb-2"><input type="text" class="form-description-editable form-input-base form-control form-control-sm question-description-input" placeholder="섹션 설명 (선택 사항)" value="${initial.description || ""}"/></div>
+            <div class="mb-2"><input type="text" class="form-description-editable form-input-base form-control form-control-sm section-description-input" placeholder="섹션 설명 (선택 사항)" value="${initial.description || ""}"/></div>
         </div>
     `;
 
@@ -798,13 +789,13 @@ function attachSectionEvents(card) {
 
     titleInput.addEventListener("blur", async () => {
         await FormAPI.updateSection(sectionId, {
-            title: titleInput.innerHTML.trim(),
+            title: titleInput.value.trim(),
         });
     });
 
     descInput.addEventListener("blur", async () => {
         await FormAPI.updateSection(sectionId, {
-            description: descInput.innerHTML.trim(),
+            description: descInput.value.trim(),
         });
     });
 
