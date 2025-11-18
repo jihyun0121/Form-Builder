@@ -3,32 +3,47 @@ const searchInputEl = document.getElementById("searchInput");
 const noResultEl = document.getElementById("noResultMessage");
 const emptyTemplateCardEl = document.getElementById("emptyTemplateCard");
 
-const recentForms = [
-    {
-        id: 1,
-        title: "IT 쇼 피드백 설문",
-        owner: "백지현",
-        updatedAt: "2025-11-13",
-    },
-    {
-        id: 2,
-        title: "동아리 만족도 조사",
-        owner: "뉴미디어소프트웨어과",
-        updatedAt: "2025-11-10",
-    },
-    {
-        id: 3,
-        title: "프로젝트 팀 회고 설문",
-        owner: "Form 팀",
-        updatedAt: "2025-11-09",
-    },
-    {
-        id: 4,
-        title: "수업 이해도 체크",
-        owner: "3학년 2반",
-        updatedAt: "2025-11-05",
-    },
-];
+let recentForms = [];
+
+window.addEventListener("DOMContentLoaded", async () => {
+    const userId = localStorage.getItem("user_id");
+
+    try {
+        let forms = [];
+
+        if (userId) {
+            try {
+                const res = await FormAPI.getFormByUserId(userId);
+                forms = Array.isArray(res) ? res : [];
+            } catch (err) {
+                if (err.error === "해당 사용자가 생성한 설문이 없습니다") {
+                    forms = [];
+                } else {
+                    console.error("폼 목록 불러오기 실패:", err);
+                    noResultEl.classList.remove("d-none");
+                    noResultEl.textContent = "폼 목록을 불러오는 중 오류가 발생했습니다.";
+                    return;
+                }
+            }
+        } else {
+            const res = await FormAPI.getAllForms();
+            forms = res.data || [];
+        }
+
+        recentForms = forms.map((f) => ({
+            id: f.form_id ?? f.id,
+            title: f.title || "제목 없는 설문지",
+            owner: f.username || f.owner || "알 수 없음",
+            updatedAt: f.updated_at || f.modified_at || f.created_at || "",
+        }));
+
+        renderRecentForms(recentForms);
+    } catch (e) {
+        console.error("폼 목록 불러오기 실패:", e);
+        noResultEl.classList.remove("d-none");
+        noResultEl.textContent = "폼 목록을 불러오는 중 오류가 발생했습니다.";
+    }
+});
 
 function renderRecentForms(list) {
     recentListEl.innerHTML = "";
@@ -42,20 +57,28 @@ function renderRecentForms(list) {
 
     list.forEach((form) => {
         const col = document.createElement("div");
-        col.className = "col-12 col-md-6";
+        col.className = "col-12 col-md-6 col-lg-4";
+
         col.innerHTML = `
-                <div class="row g-3">
-                    <div class="col-6 col-sm-4 col-md-3">
-                        <div id="emptyTemplateCard" class="card template-card p-3 d-flex flex-column">
-                            <div class="template-icon mb-3">
-                                <i class="bi bi-plus-lg"></i>
-                            </div>
-                            <span class="fw-semibold mb-1">빈 템플릿</span>
-                            <span class="text-muted" style="font-size: 0.85rem">제목 없는 새 설문지</span>
-                        </div>
+            <div class="card template-card p-3 d-flex flex-column h-100" style="cursor: pointer">
+                <span class="fw-semibold mb-1">${form.title}</span>
+                <span class="text-muted" style="font-size: 0.8rem">
+                    ${form.updatedAt ? new Date(form.updatedAt).toLocaleDateString() : "-"}
+                </span>
+                <div class="dropdown">
+                    <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="더보기">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                    <div class="dropdown-menu small">
+                        <button class="dropdown-item text-danger" id="moveToTrashBtn">삭제</button>
                     </div>
                 </div>
-                `;
+            </div>
+        `;
+
+        col.querySelector(".card").addEventListener("click", () => {
+            window.location.href = `/frontend/html/editer.html?formId=${form.id}`;
+        });
 
         recentListEl.appendChild(col);
     });
@@ -76,10 +99,40 @@ function handleSearch() {
     renderRecentForms(filtered);
 }
 
-renderRecentForms(recentForms);
-
 searchInputEl.addEventListener("input", handleSearch);
 
-emptyTemplateCardEl.addEventListener("click", () => {
-    alert("빈 템플릿으로 새 설문지를 시작합니다. (여기에 라우팅 연결)");
+emptyTemplateCardEl.addEventListener("click", async () => {
+    try {
+        const userId = localStorage.getItem("user_id");
+
+        const dto = {
+            title: "제목 없는 설문지",
+            description: "",
+            user_id: userId ? Number(userId) : null,
+            is_public: false,
+        };
+
+        const res = await FormAPI.createForm(dto);
+
+        const newForm = res.form;
+
+        if (!newForm) {
+            console.error("폼 생성 응답이 올바르지 않습니다:", res);
+            alert("폼 생성 오류: 잘못된 응답 형식");
+            return;
+        }
+
+        const newFormId = newForm.form_id;
+
+        if (!newFormId) {
+            console.error("form_id 없음:", newForm);
+            alert("새 폼 ID를 찾을 수 없습니다.");
+            return;
+        }
+
+        window.location.href = `/frontend/html/editer.html?formId=${newFormId}`;
+    } catch (e) {
+        console.error("새 폼 생성 중 오류:", e);
+        alert("새 양식을 생성하는 중 오류가 발생했습니다.");
+    }
 });
