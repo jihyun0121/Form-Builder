@@ -137,6 +137,31 @@
                             </div>
                         </div>
                     </section>
+
+                    <section class="text-center mt-2 d-md-none">
+                        <button id="addQuestionBtn" class="btn btn-outline-primary"><i class="bi bi-plus-lg me-1"></i> 질문 추가</button>
+                    </section>
+
+                    <section class="mt-4">
+                        <details>
+                            <summary class="small text-muted mb-1" style="cursor: pointer">현재 폼 구조(JSON) 보기</summary>
+                            <pre id="debugOutput" class="bg-dark text-light p-3 rounded small mt-2" style="max-height: 260px; overflow: auto"></pre>
+                        </details>
+                    </section>
+
+                    <aside class="floating-menu d-none bg-white d-md-flex flex-column">
+                        <button class="floating-btn" id="sideAddQuestionBtn" aria-label="질문 추가" data-tooltip="질문 추가">
+                            <i class="floating-icon bi bi-plus-lg"></i>
+                        </button>
+
+                        <button class="floating-btn" id="sideAddTitleDescBtn" aria-label="제목 및 설명 추가" data-tooltip="제목 및 설명 추가">
+                            <i class="floating-icon bi bi-text-paragraph"></i>
+                        </button>
+
+                        <button class="floating-btn" id="sideAddSectionBtn" aria-label="섹션 추가" data-tooltip="섹션 추가">
+                            <i class="floating-icon bi bi-layout-three-columns"></i>
+                        </button>
+                    </aside>
                 </main>
             </div>
 
