@@ -66,7 +66,6 @@ const formDescriptionInput = document.getElementById("formDescriptionInput");
 const addQuestionBtn = document.getElementById("addQuestionBtn");
 const sideAddQuestionBtn = document.getElementById("sideAddQuestionBtn");
 const sideAddSectionBtn = document.getElementById("sideAddSectionBtn");
-const sideAddTitleDescBtn = document.getElementById("sideAddTitleDescBtn");
 
 const emptyHintEl = document.getElementById("emptyHint");
 const debugOutput = document.getElementById("debugOutput");
@@ -437,19 +436,28 @@ function collectSettingsFromUI(card) {
 }
 
 function regenerateOrderNumbers() {
-    const sectionBlocks = [...blocksContainer.children].filter((b) => b.dataset.blockType === "section");
+    const blocks = [...blocksContainer.children];
 
-    const rootSectionBlocks = [...blocksContainer.children].filter((b) => b.dataset.blockType !== "title" && !b.dataset.sectionId);
+    const firstSection = blocks.find((b) => b.dataset.blockType === "section");
+    if (!firstSection) return;
+    firstSectionId = firstSection.dataset.sectionId;
 
-    const sectionIds = ["1", ...sectionBlocks.map((s) => s.dataset.sectionId)];
+    let sectionMap = {};
+    let currentSection = firstSectionId;
 
-    for (const sId of sectionIds) {
-        const blocks = getBlocksBySection(sId);
-        let order = 1;
-        for (const b of blocks) {
-            if (b.dataset.blockType === "question") {
-                b.dataset.orderNum = order++;
+    for (const b of blocks) {
+        if (b.dataset.blockType === "section") {
+            currentSection = b.dataset.sectionId;
+            sectionMap[currentSection] = 1;
+            continue;
+        }
+
+        if (b.dataset.blockType === "question") {
+            if (!sectionMap[currentSection]) {
+                sectionMap[currentSection] = 1;
             }
+
+            b.dataset.orderNum = sectionMap[currentSection]++;
         }
     }
 }
@@ -476,7 +484,7 @@ if (blocksContainer) {
 
             FormAPI.updateQuestion(item.dataset.questionId, {
                 section_id: newSectionId,
-                order_num: item.dataset.orderNum,
+                order_num: Number(item.dataset.orderNum),
             });
         },
     });
@@ -523,13 +531,6 @@ function collectFormStructure() {
                     question_type: b.querySelector(".question-type-select")?.value || "SHORT_TEXT",
                     is_required: b.querySelector(".question-required-switch")?.checked || false,
                     order_num: Number(b.dataset.orderNum) || 1,
-                });
-            }
-            if (b.dataset.blockType === "titleDesc") {
-                section.questions.push({
-                    blockType: "titleDesc",
-                    title: b.querySelector(".sub-title-input")?.value || "",
-                    description: b.querySelector(".sub-description-input")?.value || "",
                 });
             }
         }
@@ -655,42 +656,6 @@ function createSectionBlock(initial = {}) {
 
     createGotoBlockForSection(card.dataset.sectionId);
     toggleGotoVisibility();
-    updateDebug();
-}
-
-function createTitleDescBlock(initial = {}, insertAfter = null) {
-    const card = document.createElement("div");
-    card.className = "card block-card";
-    card.dataset.blockType = "titleDesc";
-    card.dataset.titleDescId = initial.titleDescId || generateTempId("t");
-
-    const sectionId = initial.sectionId || getSectionIdOfBlock(insertAfter || blocksContainer.lastElementChild);
-    card.dataset.sectionId = sectionId;
-
-    card.innerHTML = `
-        <div class="card-body">
-            <div class="d-flex-row align-items-center mb-2">
-                <span class="drag-handle"><i class="bi bi-three-dots"></i></span>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <input type="text" class="form-question-editable form-input-base form-control form-control-sm question-text-input me-2" placeholder="제목" value="${initial.title || ""}">
-                        <button class="btn btn-outline-danger btn-sm btn-delete-title">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
-
-                    <div class="mb-2"><input type="text" class="form-description-editable form-input-base form-control form-control-sm question-description-input" placeholder="설명 (선택 사항)" value="${initial.description || ""}"/></div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    attachTitleDescEvents(card);
-
-    if (insertAfter) blocksContainer.insertBefore(card, insertAfter.nextElementSibling);
-    else blocksContainer.appendChild(card);
-
-    regenerateOrderNumbers();
     updateDebug();
 }
 
@@ -850,22 +815,6 @@ function attachSectionEvents(card) {
     });
 }
 
-function attachTitleDescEvents(card) {
-    const deleteBtn = card.querySelector(".btn-delete-title");
-
-    deleteBtn.addEventListener("click", () => {
-        card.remove();
-        regenerateOrderNumbers();
-        updateDebug();
-    });
-
-    const titleInput = card.querySelector(".sub-title-input");
-    titleInput.addEventListener("blur", () => updateDebug());
-
-    const descInput = card.querySelector(".sub-description-input");
-    descInput.addEventListener("blur", () => updateDebug());
-}
-
 function createGotoBlockForSection(sectionId) {
     const goto = document.createElement("div");
     goto.className = "card block-card section-goto-block";
@@ -979,25 +928,6 @@ function getSectionIdOfBlock(block) {
     return firstSectionId;
 }
 
-function regenerateOrderNumbers() {
-    const blocks = [...blocksContainer.children];
-    let sectionMap = {};
-    let currentSection = firstSectionId;
-
-    for (const b of blocks) {
-        if (b.dataset.blockType === "section") {
-            currentSection = b.dataset.sectionId;
-            if (!sectionMap[currentSection]) sectionMap[currentSection] = 1;
-            continue;
-        }
-
-        if (b.dataset.blockType === "question" || b.dataset.blockType === "titleDesc") {
-            b.dataset.sectionId = currentSection;
-            b.dataset.orderNum = sectionMap[currentSection]++;
-        }
-    }
-}
-
 function findLastSectionId() {
     const sections = [...blocksContainer.querySelectorAll("[data-block-type='section']")];
     if (sections.length === 0) return firstSectionId;
@@ -1008,7 +938,7 @@ function findLastBlockOfSection(sectionId) {
     const blocks = [...blocksContainer.children];
     let last = null;
     for (const b of blocks) {
-        if (b.dataset.sectionId === sectionId && (b.dataset.blockType === "question" || b.dataset.blockType === "titleDesc")) {
+        if (b.dataset.sectionId === sectionId && b.dataset.blockType === "question") {
             last = b;
         }
         if (b.dataset.blockType === "section" && b.dataset.sectionId !== sectionId) continue;
@@ -1056,16 +986,6 @@ function exportFormStructure() {
                 section_id: b.dataset.sectionId,
             });
         }
-
-        if (b.dataset.blockType === "titleDesc") {
-            sections[b.dataset.sectionId].questions.push({
-                type: "TITLE_DESC",
-                title: b.querySelector(".sub-title-input")?.value || "",
-                description: b.querySelector(".sub-description-input")?.value || "",
-                order_num: b.dataset.orderNum,
-                section_id: b.dataset.sectionId,
-            });
-        }
     }
 
     result.sections = Object.values(sections);
@@ -1107,16 +1027,6 @@ sideAddQuestionBtn?.addEventListener("click", async () => {
     } catch (err) {
         alert("질문 생성 중 문제가 발생했습니다.");
     }
-});
-
-sideAddTitleDescBtn?.addEventListener("click", () => {
-    const targetSectionId = findLastSectionId();
-    const lastBlock = findLastBlockOfSection(targetSectionId);
-
-    createTitleDescBlock({ title: "", description: "", sectionId: targetSectionId }, lastBlock);
-
-    regenerateOrderNumbers();
-    updateDebug();
 });
 
 sideAddSectionBtn?.addEventListener("click", async () => {
