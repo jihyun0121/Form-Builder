@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <title>폼 제작 - Form Builder</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+        <link rel="stylesheet" href="../css/header.css" />
+    </head>
+
+    <body>
+        <div>
+            <nav class="navbar navbar-light bg-white px-2">
+                <a class="navbar-brand d-flex align-items-center" href="/frontend/html/">
+                    <i class="bi bi-ui-checks-grid fs-4"></i>
+                </a>
+
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="테마 설정">
+                            <i class="bi bi-palette"></i>
+                        </button>
+                    </div>
+
+                    <button class="icon-btn" id="previewHeaderBtn" data-tooltip="미리보기">
+                        <i class="bi bi-eye"></i>
+                    </button>
+
+                    <button class="icon-btn" id="undoBtn" data-tooltip="되돌리기">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </button>
+
+                    <button class="icon-btn" id="redoBtn" data-tooltip="다시 실행">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </button>
+
+                    <div class="dropdown">
+                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="공유">
+                            <i class="bi bi-share"></i>
+                        </button>
+
+                        <div class="dropdown-menu p-3 share-menu small">
+                            <div class="fw-semibold mb-2">응답자 링크</div>
+                            <input type="text" class="form-control form-control-sm mb-1" id="originalUrl" readonly />
+                            <input type="text" class="form-control form-control-sm mb-2" id="shortUrl" readonly />
+                            <button class="btn btn-secondary btn-sm w-100" id="copyUrlBtn">복사</button>
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="게시">
+                            <i class="bi bi-upload"></i>
+                        </button>
+
+                        <div class="dropdown-menu small">
+                            <button class="dropdown-item" id="manageFormBtn">관리</button>
+                            <button class="dropdown-item" id="shareFormBtn">공유</button>
+                        </div>
+                    </div>
+
+                    <div class="dropdown">
+                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="더보기">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+
+                        <div class="dropdown-menu small">
+                            <button class="dropdown-item text-danger" id="moveToTrashBtn">휴지통으로 이동</button>
+                            <button class="dropdown-item" id="unpublishBtn">게시 취소</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <header class="global-header bg-white border-bottom px-3">
+                <nav class="page-tabs">
+                    <button class="tab-btn active fw-semibold" data-page="questions">질문</button>
+                    <button class="tab-btn fw-semibold" data-page="responses">응답</button>
+                    <button class="tab-btn fw-semibold" data-page="settings">설정</button>
+                    <div class="tab-underline"></div>
+                </nav>
+            </header>
+        </div>
+
+        <div class="builder-wrapper container">
+            <div id="questionsPage" class="questions-page"></div>
+            <div id="responsesPage" class="d-none"></div>
+            <div id="settingsPage" class="d-none p-3"></div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+        <script src="../js/api.js" defer></script>
+        <script src="../js/header.js" defer></script>
+    </body>
+</html>

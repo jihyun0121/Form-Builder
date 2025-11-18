@@ -1,0 +1,136 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
+body {
+    background: var(--form-bg-color);
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 66px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    z-index: 1000;
+}
+
+.navbar-brand {
+    width: 48px;
+    height: 48px;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+}
+
+.navbar-brand i {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.icon-btn {
+    width: 48px;
+    height: 48px;
+    background: none;
+    border: none;
+    padding: 6px 8px;
+    border-radius: 100px;
+    cursor: pointer;
+    color: #5f5a68;
+    position: relative;
+}
+
+.icon-btn i {
+    font-size: 20px;
+    line-height: 1;
+}
+
+.icon-btn:hover {
+    background: #f5f5f5;
+}
+
+.icon-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 8px;
+    background: #000;
+    color: #fff;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.15s ease;
+}
+
+.icon-btn:hover::after {
+    opacity: 1;
+    bottom: -32px;
+}
+
+.global-header {
+    position: fixed;
+    top: 66px;
+    left: 0;
+    right: 0;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 999;
+}
+
+.page-tabs {
+    position: relative;
+    display: flex;
+    gap: 1px;
+}
+
+.page-tabs .tab-btn {
+    width: 50px;
+    height: 36px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}
+
+.page-tabs .tab-btn.active {
+    color: #000;
+    font-weight: 600;
+}
+
+.tab-underline {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    height: 3.5px;
+    width: 0;
+    background: var(--form-theme-color);
+    border-radius: 3px 3px 0 0;
+    transition: 0.25s;
+}
+
+.builder-wrapper {
+    margin-top: 118px;
+}
