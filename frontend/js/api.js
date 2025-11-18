@@ -3,6 +3,9 @@ const API_URL = "http://localhost:8080";
 async function request(method, url, data) {
     const token = localStorage.getItem("token");
 
+    console.log("API 요청:", method, API_URL + url);
+    if (data) console.log("전송 데이터:", JSON.parse(JSON.stringify(data)));
+
     const options = {
         method,
         headers: {
@@ -30,6 +33,8 @@ async function request(method, url, data) {
             console.error("API 오류:", responseBody);
             throw responseBody;
         }
+
+        console.log("API 응답:", responseBody);
 
         return responseBody;
     } catch (err) {
