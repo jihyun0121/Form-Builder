@@ -21,11 +21,11 @@ public class SectionWithQuestionsDTO {
     @JsonProperty("order_num")
     private Integer orderNum;
 
-    @JsonProperty("section_title")
-    private String sectionTitle;
+    @JsonProperty("title")
+    private String title;
 
-    @JsonProperty("section_description")
-    private String sectionDescription;
+    @JsonProperty("description")
+    private String description;
 
     @JsonProperty("questions")
     private List<Map<String, Object>> questions;
