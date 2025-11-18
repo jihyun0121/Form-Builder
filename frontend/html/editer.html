@@ -7,6 +7,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
         <link rel="stylesheet" href="../css/header.css" />
+        <link rel="stylesheet" href="../css/editer.css" />
     </head>
 
     <body>
@@ -107,7 +108,38 @@
         </div>
 
         <div class="builder-wrapper container">
-            <div id="questionsPage" class="questions-page"></div>
+            <div id="questionsPage" class="questions-page">
+                <main class="builder-container">
+                    <section id="blocksContainer" class="blocks-container d-flex flex-column gap-3 mb-4">
+                        <div class="card block-card title-block-card" data-block-type="title">
+                            <div class="card-body">
+                                <div class="editor-wrapper mb-2">
+                                    <div id="formTitleInput" class="form-title-editable form-input-base" contenteditable="true" data-placeholder="제목 없는 설문지"></div>
+                                    <div class="editor-toolbar mb-1">
+                                        <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
+                                        <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
+                                        <button class="toolbar-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
+                                        <button class="toolbar-btn" data-cmd="removeFormat"><i class="bi bi-x-circle"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="editor-wrapper">
+                                    <div id="formDescriptionInput" class="form-description-editable form-input-base" contenteditable="true" data-placeholder="설문지 설명을 입력하세요"></div>
+                                    <div class="editor-toolbar mb-1">
+                                        <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
+                                        <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
+                                        <button class="toolbar-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
+                                        <button class="toolbar-btn" data-cmd="insertOrderedList"><i class="bi bi-list-ol"></i></button>
+                                        <button class="toolbar-btn" data-cmd="insertUnorderedList"><i class="bi bi-list-ul"></i></button>
+                                        <button class="toolbar-btn" data-cmd="removeFormat"><i class="bi bi-x-circle"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+
             <div id="responsesPage" class="d-none"></div>
             <div id="settingsPage" class="d-none p-3"></div>
         </div>
@@ -116,5 +148,6 @@
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="../js/api.js" defer></script>
         <script src="../js/header.js" defer></script>
+        <script src="../js/editer.js" defer></script>
     </body>
 </html>
