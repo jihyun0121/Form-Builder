@@ -85,6 +85,36 @@ body {
     bottom: -32px;
 }
 
+.theme-menu .theme-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.theme-menu .theme-color.selected {
+    border-color: #000;
+    transform: scale(1.15);
+}
+
+.color-row {
+    display: grid;
+    grid-template-columns: repeat(6, 20px);
+    gap: 6px;
+}
+
+.bg-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.background-group {
+    display: flex;
+    gap: 8px;
+}
+
 .global-header {
     position: fixed;
     top: 66px;
