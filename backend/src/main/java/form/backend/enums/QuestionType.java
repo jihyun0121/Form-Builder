@@ -91,17 +91,6 @@ public enum QuestionType {
             return Map.of("time", "");
         }
     },
-    FILE_UPLOAD {
-        @Override
-        public void validateAnswer(Map<String, Object> data) {
-            requireKey(data, "file_url");
-        }
-
-        @Override
-        public Map<String, Object> getDefaultAnswerTemplate() {
-            return Map.of("file_url", null, "file_type", "");
-        }
-    },
     SLIDER {
         @Override
         public void validateAnswer(Map<String, Object> data) {
@@ -154,8 +143,7 @@ public enum QuestionType {
     protected void requireKey(Map<String, Object> data, String key) {
         if (data == null || !data.containsKey(key)) {
             throw new IllegalArgumentException(
-                this.name() + " 유형의 답변에는 '" + key + "' 키가 필요합니다."
-            );
+                    this.name() + " 유형의 답변에는 '" + key + "' 키가 필요합니다.");
         }
     }
 
@@ -172,8 +160,7 @@ public enum QuestionType {
         }
         if (!ok) {
             throw new IllegalArgumentException(
-                this.name() + " 유형의 답변에는 다음 중 하나가 필요합니다: " + String.join(", ", keys)
-            );
+                    this.name() + " 유형의 답변에는 다음 중 하나가 필요합니다: " + String.join(", ", keys));
         }
     }
 }
