@@ -458,7 +458,7 @@ if (blocksContainer) {
         animation: 150,
         handle: ".drag-handle",
         ghostClass: "bg-light",
-        filter: ".drag-handle, [data-block-type='title']",
+        filter: "[data-block-type='section'], [data-block-type='title']",
         onEnd(evt) {
             const item = evt.item;
 
