@@ -458,7 +458,7 @@ if (blocksContainer) {
         animation: 150,
         handle: ".drag-handle",
         ghostClass: "bg-light",
-        filter: "[data-block-type='section'], [data-block-type='title']",
+        filter: ".drag-handle, [data-block-type='title']",
         onEnd(evt) {
             const item = evt.item;
 
@@ -625,28 +625,49 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
 
 function createSectionBlock(initial = {}) {
     const card = document.createElement("div");
-    card.className = "card block-card";
+    card.className = "card block-section-card";
     card.dataset.blockType = "section";
     card.dataset.sectionId = initial.sectionId || generateTempId("s");
 
     card.innerHTML = `
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <input type="text" class="form-question-editable form-input-base form-control form-control-sm section-title-input me-2" placeholder="섹션 제목" value="${initial.title || ""}"/>
-                <button class="btn btn-outline-danger btn-sm btn-delete-section">
-                    <i class="bi bi-trash"></i>
-                </button>
+            <div class="question-header d-flex justify-content-between align-items-start">
+                <div class="question-left flex-grow-1">
+                    <div class="editor-wrapper mb-1">
+                        <div class="section-title-input form-input-base editable" contenteditable="true" data-placeholder="섹션 제목">${initial.title || ""}</div>
+                        <div class="editor-toolbar small">
+                            <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
+                            <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
+                            <button class="toolbar-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
+                            <button class="toolbar-btn" data-cmd="removeFormat"><i class="bi bi-x-circle"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-right ms-3">
+                    <button class="btn btn-outline-danger btn-sm btn-delete-section">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
             </div>
-            <div class="mb-2"><input type="text" class="form-description-editable form-input-base form-control form-control-sm section-description-input" placeholder="섹션 설명 (선택 사항)" value="${initial.description || ""}"/></div>
+
+            <div class="editor-wrapper mb-2">
+                <div class="section-description-input form-input-base editable" contenteditable="true" data-placeholder="섹션 설명 (선택 사항)">${initial.description || ""}</div>
+
+                <div class="editor-toolbar small">
+                    <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
+                    <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
+                    <button class="toolbar-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
+                    <button class="toolbar-btn" data-cmd="insertOrderedList"><i class="bi bi-list-ol"></i></button>
+                    <button class="toolbar-btn" data-cmd="insertUnorderedList"><i class="bi bi-list-ul"></i></button>
+                    <button class="toolbar-btn" data-cmd="removeFormat"><i class="bi bi-x-circle"></i></button>
+                </div>
+            </div>
         </div>
     `;
 
     attachSectionEvents(card);
-
     blocksContainer.appendChild(card);
-
-    // createGotoBlockForSection(card.dataset.sectionId);
-    // toggleGotoVisibility();
     updateDebug();
 }
 
@@ -789,13 +810,13 @@ function attachSectionEvents(card) {
 
     titleInput.addEventListener("blur", async () => {
         await FormAPI.updateSection(sectionId, {
-            title: titleInput.value.trim(),
+            title: titleInput.innerHTML.trim(),
         });
     });
 
     descInput.addEventListener("blur", async () => {
         await FormAPI.updateSection(sectionId, {
-            description: descInput.value.trim(),
+            description: descInput.innerHTML.trim(),
         });
     });
 
@@ -1050,8 +1071,9 @@ window.addEventListener("DOMContentLoaded", async () => {
         const titleBlock = blocksContainer.querySelector("[data-block-type='title']");
 
         if (titleBlock) {
+            titleBlock.remove();
             blocksContainer.innerHTML = "";
-            blocksContainer.appendChild(titleBlock);
+            blocksContainer.prepend(titleBlock);
         }
 
         if (formTitleInput) formTitleInput.innerHTML = data.title || "";
@@ -1091,7 +1113,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             invisible.dataset.blockType = "section";
             invisible.dataset.sectionId = firstSectionId;
             invisible.style.display = "none";
-            blocksContainer.appendChild(invisible);
+            blocksContainer.insertBefore(invisible, titleBlock.nextElementSibling);
 
             createQuestionBlock({
                 questionId: q.question_id,
@@ -1114,7 +1136,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         invisible.dataset.blockType = "section";
         invisible.dataset.sectionId = firstSectionId;
         invisible.style.display = "none";
-        blocksContainer.appendChild(invisible);
+        blocksContainer.insertBefore(invisible, titleBlock.nextElementSibling);
 
         for (const s of data.sections) {
             if (s.section_id === firstSectionId) {
@@ -1157,15 +1179,7 @@ window.addEventListener("DOMContentLoaded", async () => {
             }
         }
 
-        // for (const s of data.sections) {
-        //     if (s.section_id !== firstSectionId) {
-        //         createGotoBlockForSection(s.section_id);
-        //     }
-        // }
-
         regenerateOrderNumbers();
-        // updateGotoOptionsAll();
-        // toggleGotoVisibility();
         updateDebug();
     } catch (err) {
         alert("폼 구조를 불러오는 중 오류가 발생했습니다.");
