@@ -1047,6 +1047,13 @@ window.addEventListener("DOMContentLoaded", async () => {
         const res = await FormAPI.getFormStructure(formId);
         const data = res;
 
+        if (formTitleInput) {
+            formTitleInput.innerHTML = data.title || "";
+        }
+        if (formDescriptionInput) {
+            formDescriptionInput.innerHTML = data.description || "";
+        }
+
         formTitleInput.addEventListener("blur", async () => {
             await FormAPI.updateForm(formId, { title: formTitleInput.innerHTML.trim() });
         });
@@ -1082,13 +1089,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             const q = qRes.question ?? qRes;
 
+            const invisible = document.createElement("div");
+            invisible.dataset.blockType = "section";
+            invisible.dataset.sectionId = firstSectionId;
+            invisible.style.display = "none";
+            blocksContainer.appendChild(invisible);
+
             createQuestionBlock({
                 questionId: q.question_id,
                 question_text: q.question_text,
                 description: q.description,
                 question_type: q.question_type,
                 is_required: q.is_required,
-                sectionId: firstSectionId,
+                sectionId: s.section_id,
                 settings: q.settings || {},
             });
 
@@ -1096,35 +1109,49 @@ window.addEventListener("DOMContentLoaded", async () => {
             updateDebug();
             return;
         }
+        firstSectionId = data.sections[0].section_id;
 
-        firstSectionId = data.sections[0].sectionId;
+        const invisibleSection = document.createElement("div");
+        invisibleSection.dataset.blockType = "section";
+        invisibleSection.dataset.sectionId = firstSectionId;
+        invisibleSection.style.display = "none";
+        blocksContainer.appendChild(invisibleSection);
 
         for (const s of data.sections) {
-            const sectionId = s.sectionId;
+            if (s.section_id === firstSectionId) continue;
 
-            if (sectionId !== firstSectionId) {
-                createSectionBlock({
-                    sectionId,
-                    title: s.title,
-                    description: s.description,
+            createSectionBlock({
+                sectionId: s.section_id,
+                title: s.title,
+                description: s.description,
+            });
+        }
+
+        for (const s of data.sections) {
+            if (!s.questions) continue;
+
+            for (const q of s.questions) {
+                createQuestionBlock({
+                    questionId: q.question_id,
+                    question_text: q.question_text,
+                    description: q.description,
+                    question_type: q.question_type,
+                    is_required: q.is_required,
+                    sectionId: s.section_id,
+                    settings: q.settings || {},
                 });
             }
+        }
 
-            if (s.questions) {
-                for (const q of s.questions) {
-                    createQuestionBlock({
-                        questionId: q.question_id,
-                        question_text: q.question_text,
-                        description: q.description,
-                        question_type: q.question_type,
-                        is_required: q.is_required,
-                        sectionId,
-                    });
-                }
+        for (const s of data.sections) {
+            if (s.section_id !== firstSectionId) {
+                createGotoBlockForSection(s.section_id);
             }
         }
 
         regenerateOrderNumbers();
+        updateGotoOptionsAll();
+        toggleGotoVisibility();
         updateDebug();
     } catch (err) {
         alert("폼 구조를 불러오는 중 오류가 발생했습니다.");
