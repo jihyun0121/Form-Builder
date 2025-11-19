@@ -23,7 +23,7 @@ public class ResponseController {
             ResponseDTO newResponse = ResponseDTO.builder()
                 .responseId(response.getResponseId())
                 .formId(formId)
-                .userId(response.getUser().getUserId())
+                .userId(response.getUser() != null ? response.getUser().getUserId() : null)
                 .createdAt(response.getCreatedAt())
                 .build();
 

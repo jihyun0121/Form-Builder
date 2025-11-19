@@ -69,39 +69,6 @@ public enum QuestionType {
             return Map.of("score", 0);
         }
     },
-    DATE {
-        @Override
-        public void validateAnswer(Map<String, Object> data) {
-            requireKey(data, "date");
-        }
-
-        @Override
-        public Map<String, Object> getDefaultAnswerTemplate() {
-            return Map.of("date", "");
-        }
-    },
-    TIME {
-        @Override
-        public void validateAnswer(Map<String, Object> data) {
-            requireKey(data, "time");
-        }
-
-        @Override
-        public Map<String, Object> getDefaultAnswerTemplate() {
-            return Map.of("time", "");
-        }
-    },
-    SLIDER {
-        @Override
-        public void validateAnswer(Map<String, Object> data) {
-            requireKey(data, "value");
-        }
-
-        @Override
-        public Map<String, Object> getDefaultAnswerTemplate() {
-            return Map.of("value", 0);
-        }
-    },
     MATRIX_RADIO {
         @Override
         public void validateAnswer(Map<String, Object> data) {
@@ -122,17 +89,6 @@ public enum QuestionType {
         @Override
         public Map<String, Object> getDefaultAnswerTemplate() {
             return Map.of("answers", new LinkedHashMap<String, List<String>>());
-        }
-    },
-    RANKING {
-        @Override
-        public void validateAnswer(Map<String, Object> data) {
-            requireKey(data, "ranking");
-        }
-
-        @Override
-        public Map<String, Object> getDefaultAnswerTemplate() {
-            return Map.of("ranking", new ArrayList<>());
         }
     };
 

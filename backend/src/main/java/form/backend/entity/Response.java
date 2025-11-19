@@ -24,7 +24,7 @@ public class Response {
     private Long responseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = true)
     @JsonProperty("user_id")
     private User user;
 

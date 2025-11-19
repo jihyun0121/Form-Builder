@@ -22,19 +22,24 @@ public class ResponseService {
     private final FormRepository formRepository;
 
     public Response addResponse(Long formId, ResponseDTO dto) {
-		User user = userRepository.findById(dto.getUserId())
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
-
+        User user = null;
+    
+        if (dto.getUserId() != null) {
+            user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+        }
+    
         Form form = formRepository.findById(formId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."));
-
+    
         Response response = Response.builder()
                 .form(form)
-                .user(user)
+                .user(user) // null 가능
                 .build();
-
+    
         return responseRepository.save(response);
     }
+    
 
     public List<ResponseDTO> getResponseByFormId(Long formId) {
         List<Response> responses = responseRepository.findByForm_FormId(formId);
@@ -43,7 +48,7 @@ public class ResponseService {
 			.map(response -> ResponseDTO.builder()
                 .responseId(response.getResponseId())
 				.formId(response.getForm().getFormId())
-				.userId(response.getUser().getUserId())
+				.userId(response.getUser() != null ? response.getUser().getUserId() : null)
                 .createdAt(response.getCreatedAt())
 				.build())
 			.toList();
@@ -56,7 +61,7 @@ public class ResponseService {
 		return ResponseDTO.builder()
             .responseId(response.getResponseId())
 			.formId(response.getForm().getFormId())
-			.userId(response.getUser().getUserId())
+			.userId(response.getUser() != null ? response.getUser().getUserId() : null)
 			.createdAt(response.getCreatedAt())
 			.build();
 	}
@@ -68,7 +73,7 @@ public class ResponseService {
 			.map(response -> ResponseDTO.builder()
                 .responseId(response.getResponseId())
                 .formId(response.getForm().getFormId())
-                .userId(response.getUser().getUserId())
+                .userId(response.getUser() != null ? response.getUser().getUserId() : null)
                 .createdAt(response.getCreatedAt())
 				.build())
 			.toList();
