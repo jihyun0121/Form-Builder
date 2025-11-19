@@ -5,6 +5,19 @@ const emptyTemplateCardEl = document.getElementById("emptyTemplateCard");
 
 let recentForms = [];
 
+function formatDate(dateString) {
+    if (!dateString) return "-";
+    try {
+        return new Date(dateString).toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+        });
+    } catch {
+        return "-";
+    }
+}
+
 window.addEventListener("DOMContentLoaded", async () => {
     const userId = localStorage.getItem("user_id");
 
@@ -33,12 +46,12 @@ window.addEventListener("DOMContentLoaded", async () => {
         recentForms = forms.map((f) => ({
             id: f.form_id ?? f.id,
             title: f.title || "제목 없는 설문지",
-            updatedAt: f.updated_at || f.modified_at || f.created_at || "",
+            updatedAt: f.updated_at || f.modified_at || f.created_at || null,
         }));
 
         renderRecentForms(recentForms);
     } catch (e) {
-        console.error("폼 목록 불러오기 실패:", e);
+        console.error("폼 목록 로드 실패:", e);
         noResultEl.classList.remove("d-none");
         noResultEl.textContent = "폼 목록을 불러오는 중 오류가 발생했습니다.";
     }
@@ -50,33 +63,59 @@ function renderRecentForms(list) {
     if (!list || list.length === 0) {
         noResultEl.classList.remove("d-none");
         return;
-    } else {
-        noResultEl.classList.add("d-none");
     }
+
+    noResultEl.classList.add("d-none");
 
     list.forEach((form) => {
         const col = document.createElement("div");
         col.className = "col-12 col-md-6 col-lg-4";
 
+        const formattedDate = formatDate(form.updatedAt);
+
         col.innerHTML = `
-            <div class="card template-card p-3 d-flex flex-column h-100" style="cursor: pointer">
-                <span class="fw-semibold mb-1">${form.title}</span>
-                <span class="text-muted" style="font-size: 0.8rem">
-                    ${form.updatedAt ? new Date(form.updatedAt).toLocaleDateString() : "-"}
-                </span>
-                <div class="dropdown">
-                    <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="더보기">
-                        <i class="bi bi-three-dots"></i>
-                    </button>
-                    <div class="dropdown-menu small">
-                        <button class="dropdown-item text-danger" id="moveToTrashBtn">삭제</button>
+            <div class="recent-card position-relative">
+                <div class="card-body">
+                    <div class="dropdown position-absolute" style="top: 6px; right: 6px;">
+                        <button class="icon-btn no-propagation" data-bs-toggle="dropdown">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+
+                        <div class="dropdown-menu small dropdown-menu-end">
+                            <button class="dropdown-item text-danger no-propagation delete-btn" data-form-id="${form.id}" >
+                                삭제
+                            </button>
+                        </div>
                     </div>
+
+                    <div class="recent-title">${form.title}</div>
+                    <div class="muted-text mt-1">${formattedDate}</div>
                 </div>
             </div>
         `;
 
-        col.querySelector(".card").addEventListener("click", () => {
+        const card = col.querySelector(".recent-card");
+        card.addEventListener("click", () => {
             window.location.href = `/frontend/html/editer.html?formId=${form.id}`;
+        });
+
+        col.querySelectorAll(".no-propagation").forEach((el) => {
+            el.addEventListener("click", (e) => e.stopPropagation());
+        });
+
+        col.querySelector(".delete-btn").addEventListener("click", async (e) => {
+            const id = e.target.dataset.formId;
+
+            if (!confirm("정말 이 설문을 삭제하시겠습니까?")) return;
+
+            try {
+                await FormAPI.deleteForm(id);
+                recentForms = recentForms.filter((f) => f.id !== Number(id));
+                renderRecentForms(recentForms);
+            } catch (err) {
+                alert("삭제 실패: 서버 오류");
+                console.error(err);
+            }
         });
 
         recentListEl.appendChild(col);
@@ -91,9 +130,7 @@ function handleSearch() {
         return;
     }
 
-    const filtered = recentForms.filter((form) => {
-        return form.title.toLowerCase().includes(keyword);
-    });
+    const filtered = recentForms.filter((form) => form.title.toLowerCase().includes(keyword));
 
     renderRecentForms(filtered);
 }
@@ -112,26 +149,12 @@ emptyTemplateCardEl.addEventListener("click", async () => {
         };
 
         const res = await FormAPI.createForm(dto);
-
         const newForm = res.form;
+        if (!newForm?.form_id) throw new Error("form_id 없음");
 
-        if (!newForm) {
-            console.error("폼 생성 응답이 올바르지 않습니다:", res);
-            alert("폼 생성 오류: 잘못된 응답 형식");
-            return;
-        }
-
-        const newFormId = newForm.form_id;
-
-        if (!newFormId) {
-            console.error("form_id 없음:", newForm);
-            alert("새 폼 ID를 찾을 수 없습니다.");
-            return;
-        }
-
-        window.location.href = `/frontend/html/editer.html?formId=${newFormId}`;
+        window.location.href = `/frontend/html/editer.html?formId=${newForm.form_id}`;
     } catch (e) {
-        console.error("새 폼 생성 중 오류:", e);
-        alert("새 양식을 생성하는 중 오류가 발생했습니다.");
+        console.error("새 양식 생성 오류:", e);
+        alert("새 양식을 생성할 수 없습니다.");
     }
 });
