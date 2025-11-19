@@ -6,6 +6,7 @@
     padding: 24px;
     border-radius: 8px;
     background-color: #fff;
+    border: 1px solid rgb(218, 220, 224);
     max-width: 770px;
     margin: 0 auto;
     position: relative;
