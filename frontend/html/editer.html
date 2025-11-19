@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
         <link rel="stylesheet" href="../css/header.css" />
         <link rel="stylesheet" href="../css/editer.css" />
+        <link rel="stylesheet" href="../css/response.css" />
+        <link rel="stylesheet" href="../css/settings.css" />
     </head>
 
     <body>
@@ -161,8 +163,91 @@
                 </main>
             </div>
 
-            <div id="responsesPage" class="d-none"></div>
-            <div id="settingsPage" class="d-none p-3"></div>
+            <div id="responsesPage" class="responses-page"></div>
+
+            <div id="settingsPage" class="settings-page">
+                <div class="settings-root">
+                    <div class="setting-section" style="padding-top: 6px">
+                        <div class="section-header" data-toggle="section">
+                            <div class="title-box">
+                                <div class="main-title">응답</div>
+                                <div class="sub-title">응답 수집 및 보호 방식을 관리합니다.</div>
+                            </div>
+                            <button class="section-toggle-btn">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="setting-item" style="padding-bottom: 20px">
+                                <div>
+                                    <label>응답 수정 허용</label>
+                                    <div class="sub-title">제출 후에 응답을 수정할 수 있습니다.</div>
+                                </div>
+                                <div>
+                                    <input type="checkbox" class="setting-toggle" id="modifyResponse" />
+                                </div>
+                            </div>
+
+                            <div class="sub-title">로그인 필요</div>
+                            <div class="setting-item">
+                                <label>응답 횟수 1회로 제한</label>
+                                <div>
+                                    <input type="checkbox" class="setting-toggle" id="limitOneResponse" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section">
+                        <div class="section-header" data-toggle="section">
+                            <div class="title-box">
+                                <div class="main-title">프레젠테이션</div>
+                                <div class="sub-title">양식 및 응답 표시 방식을 관리합니다.</div>
+                            </div>
+                            <button class="section-toggle-btn">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="sub-title">제출 후</div>
+                            <div class="setting-item column setting-submit">
+                                <label>확인 메시지</label>
+                                <input id="submitMessage" class="submit-message form-control" rows="2" placeholder="응답이 기록되었습니다." />
+                            </div>
+
+                            <div class="setting-item" style="padding: 0">
+                                <label>다른 응답 제출 링크 표시</label>
+                                <div>
+                                    <input type="checkbox" class="setting-toggle" id="showAnotherLink" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="setting-section border-0" style="padding-bottom: 6px">
+                        <div class="section-header" data-toggle="section">
+                            <div class="title-box">
+                                <div class="main-title">질문 기본값</div>
+                                <div class="sub-title">설정이 모든 새 질문에 적용됩니다.</div>
+                            </div>
+                            <button class="section-toggle-btn">
+                                <i class="bi bi-chevron-down"></i>
+                            </button>
+                        </div>
+
+                        <div class="section-body">
+                            <div class="setting-item">
+                                <label>기본적으로 필수 질문으로 지정</label>
+                                <div>
+                                    <input type="checkbox" class="setting-toggle" id="defaultRequired" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -170,5 +255,7 @@
         <script src="../js/api.js" defer></script>
         <script src="../js/header.js" defer></script>
         <script src="../js/editer.js" defer></script>
+        <script src="../js/response.js" defer></script>
+        <script src="../js/settings.js" defer></script>
     </body>
 </html>
