@@ -1,11 +1,14 @@
 package form.backend.entity;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,6 +36,10 @@ public class Form {
     @JoinColumn(name = "user_id")
     @JsonProperty("user_id")
     private User user;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private Map<String, Object> settings;
 
     @Column(name = "is_public", nullable = false)
     @JsonProperty("is_public")

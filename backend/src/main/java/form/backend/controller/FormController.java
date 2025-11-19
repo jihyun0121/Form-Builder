@@ -91,13 +91,13 @@ public class FormController {
         try {
             Form updatedForm = formService.updateForm(formId, dto);
             FormDTO response = FormDTO.builder()
-                    .formId(updatedForm.getFormId())
-                    .title(updatedForm.getTitle())
-                    .description(updatedForm.getDescription())
-                    .userId(updatedForm.getUser().getUserId())
-                    .isPublic(updatedForm.isPublic())
-                    .createdAt(updatedForm.getCreatedAt())
-                    .build();
+                .formId(updatedForm.getFormId())
+                .title(updatedForm.getTitle())
+                .description(updatedForm.getDescription())
+                .userId(updatedForm.getUser().getUserId())
+                .isPublic(updatedForm.isPublic())
+                .createdAt(updatedForm.getCreatedAt())
+                .build();
             return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "form", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

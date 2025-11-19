@@ -30,15 +30,17 @@ public class FormService {
 	public Form createForm(FormDTO dto) {
 		User user = userRepository.findById(dto.getUserId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
-
+	
 		Form form = Form.builder()
 				.title(dto.getTitle())
 				.description(dto.getDescription())
+				.settings(dto.getSettings() != null ? dto.getSettings() : new HashMap<>())
 				.user(user)
+				.isPublic(dto.isPublic())
 				.build();
-
+	
 		return formRepository.save(form);
-	}
+	}	
 
 	public List<FormDTO> getAllForms() {
 		return formRepository.findAll().stream()
@@ -47,6 +49,7 @@ public class FormService {
 						.title(form.getTitle())
 						.description(form.getDescription())
 						.userId(form.getUser().getUserId())
+						.settings(form.getSettings())
 						.isPublic(form.isPublic())
 						.createdAt(form.getCreatedAt())
 						.build())
@@ -56,17 +59,18 @@ public class FormService {
 	public FormDTO getFormById(Long formId) {
 		Form form = formRepository.findById(formId)
 				.orElseThrow(() -> new IllegalArgumentException("해당 설문이 존재하지 않습니다"));
-
+	
 		return FormDTO.builder()
 				.formId(form.getFormId())
 				.title(form.getTitle())
 				.description(form.getDescription())
 				.userId(form.getUser().getUserId())
+				.settings(form.getSettings())
 				.isPublic(form.isPublic())
 				.createdAt(form.getCreatedAt())
 				.build();
 	}
-
+	
 	public List<FormDTO> getFormByUserId(Long userId) {
 		List<Form> forms = formRepository.findByUser_UserId(userId);
 
@@ -133,19 +137,24 @@ public class FormService {
 
 	public Form updateForm(Long formId, FormDTO dto) {
 		Form form = formRepository.findById(formId)
-				.orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다"));
-
+				.orElseThrow(() -> new IllegalArgumentException("해당 설문을 찾을 수 없습니다."));
+	
 		if (dto.getTitle() != null && !dto.getTitle().isBlank()) {
 			form.setTitle(dto.getTitle());
 		}
 		if (dto.getDescription() != null) {
 			form.setDescription(dto.getDescription());
 		}
-
+	
+		if (dto.getSettings() != null) {
+			form.setSettings(dto.getSettings());
+		}
+	
 		form.setPublic(dto.isPublic());
-
+	
 		return formRepository.save(form);
 	}
+	
 
 	@Transactional
 	public void deleteForm(Long formId) {

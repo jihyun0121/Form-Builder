@@ -1,6 +1,7 @@
 package form.backend.dto;
 
 import java.time.LocalDateTime;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -21,6 +22,8 @@ public class FormDTO {
 
     @JsonProperty("user_id")
     private Long userId;
+    
+    private Map<String, Object> settings;
 
     @JsonProperty("is_public")
     private boolean isPublic;
