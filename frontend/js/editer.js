@@ -506,8 +506,8 @@ function collectFormStructure() {
 
         const section = {
             sectionId: id,
-            sectionTitle: title,
-            sectionDescription: description,
+            title: title,
+            description: description,
             questions: [],
         };
 
@@ -950,8 +950,8 @@ function exportFormStructure() {
 
     sections[firstSectionId] = {
         sectionId: firstSectionId,
-        sectionTitle: null,
-        sectionDescription: null,
+        title: null,
+        description: null,
         questions: [],
     };
 
@@ -959,8 +959,8 @@ function exportFormStructure() {
         if (b.dataset.blockType === "section") {
             sections[b.dataset.sectionId] = {
                 sectionId: b.dataset.sectionId,
-                sectionTitle: b.querySelector(".section-title-input")?.value || "",
-                sectionDescription: b.querySelector(".section-description-input")?.value || "",
+                title: b.querySelector(".section-title-input")?.value || "",
+                description: b.querySelector(".section-description-input")?.value || "",
                 questions: [],
             };
             continue;
@@ -1023,7 +1023,7 @@ sideAddQuestionBtn?.addEventListener("click", async () => {
 sideAddSectionBtn?.addEventListener("click", async () => {
     try {
         const res = await FormAPI.addSection(formId, {
-            title: "",
+            title: "제목없는 섹션",
             description: "",
             order_num: 1,
         });
@@ -1105,8 +1105,8 @@ window.addEventListener("DOMContentLoaded", async () => {
             if (sectionId !== firstSectionId) {
                 createSectionBlock({
                     sectionId,
-                    title: s.sectionTitle,
-                    description: s.sectionDescription,
+                    title: s.title,
+                    description: s.description,
                 });
             }
 

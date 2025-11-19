@@ -33,7 +33,6 @@ window.addEventListener("DOMContentLoaded", async () => {
         recentForms = forms.map((f) => ({
             id: f.form_id ?? f.id,
             title: f.title || "제목 없는 설문지",
-            owner: f.username || f.owner || "알 수 없음",
             updatedAt: f.updated_at || f.modified_at || f.created_at || "",
         }));
 
@@ -93,7 +92,7 @@ function handleSearch() {
     }
 
     const filtered = recentForms.filter((form) => {
-        return form.title.toLowerCase().includes(keyword) || form.owner.toLowerCase().includes(keyword);
+        return form.title.toLowerCase().includes(keyword);
     });
 
     renderRecentForms(filtered);
