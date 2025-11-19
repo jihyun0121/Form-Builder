@@ -544,13 +544,13 @@ function generateTempId(prefix) {
 
 function createQuestionBlock(initial = {}, insertAfter = null) {
     const card = document.createElement("div");
-    card.className = "card block-card question-block";
+    card.className = "card block-qeustion-card question-block";
     card.dataset.blockType = "question";
     card.dataset.questionId = initial.questionId || generateTempId("q");
 
     card._settings = initial.settings || {};
 
-    const sectionId = initial.sectionId || getSectionIdOfBlock(insertAfter || blocksContainer.lastElementChild);
+    const sectionId = initial.sectionId || firstSectionId;
     card.dataset.sectionId = sectionId;
 
     card.innerHTML = `
@@ -645,8 +645,8 @@ function createSectionBlock(initial = {}) {
 
     blocksContainer.appendChild(card);
 
-    createGotoBlockForSection(card.dataset.sectionId);
-    toggleGotoVisibility();
+    // createGotoBlockForSection(card.dataset.sectionId);
+    // toggleGotoVisibility();
     updateDebug();
 }
 
@@ -806,76 +806,74 @@ function attachSectionEvents(card) {
     });
 }
 
-function createGotoBlockForSection(sectionId) {
-    const goto = document.createElement("div");
-    goto.className = "card block-card section-goto-block";
-    goto.dataset.blockType = "sectionGoto";
-    goto.dataset.sectionId = sectionId;
+// function createGotoBlockForSection(sectionId) {
+//     const goto = document.createElement("div");
+//     goto.className = "goto d-flex-row";
+//     goto.dataset.blockType = "sectionGoto";
+//     goto.dataset.sectionId = sectionId;
 
-    goto.innerHTML = `
-        <div class="card-body">
-            <label class="small fw-semibold">이 섹션을 완료하면</label>
-            <select class="form-select form-select-sm mt-1 section-goto-select"></select>
-        </div>
-    `;
+//     goto.innerHTML = `
+//         <label class="small fw-semibold">이 섹션을 완료하면</label>
+//         <select class="section-goto-select form-select form-select-sm"></select>
+//     `;
 
-    attachGotoEvents(goto);
+//     attachGotoEvents(goto);
 
-    const last = findLastBlockOfSection(sectionId);
-    if (last) blocksContainer.insertBefore(goto, last.nextElementSibling);
-    else {
-        const sectionBlock = [...blocksContainer.children].find((b) => b.dataset.blockType === "section" && b.dataset.sectionId === sectionId);
-        blocksContainer.insertBefore(goto, sectionBlock.nextElementSibling);
-    }
+//     const last = findLastBlockOfSection(sectionId);
+//     if (last) blocksContainer.insertBefore(goto, last.nextElementSibling);
+//     else {
+//         const sectionBlock = [...blocksContainer.children].find((b) => b.dataset.blockType === "section" && b.dataset.sectionId === sectionId);
+//         blocksContainer.insertBefore(goto, sectionBlock.nextElementSibling);
+//     }
 
-    updateGotoOptionsAll();
-}
+//     updateGotoOptionsAll();
+// }
 
-function attachGotoEvents(block) {
-    const sectionId = block.dataset.sectionId;
-    const select = block.querySelector(".section-goto-select");
+// function attachGotoEvents(block) {
+//     const sectionId = block.dataset.sectionId;
+//     const select = block.querySelector(".section-goto-select");
 
-    select.addEventListener("change", async () => {
-        await FormAPI.updateSection(sectionId, {
-            jump_to: select.value,
-        });
-    });
-}
+//     select.addEventListener("change", async () => {
+//         await FormAPI.updateSection(sectionId, {
+//             jump_to: select.value,
+//         });
+//     });
+// }
 
-function updateGotoOptionsAll() {
-    const sections = [...blocksContainer.querySelectorAll("[data-block-type='section']")];
-    const gotoBlocks = [...blocksContainer.querySelectorAll("[data-block-type='sectionGoto']")];
+// function updateGotoOptionsAll() {
+//     const sections = [...blocksContainer.querySelectorAll("[data-block-type='section']")];
+//     const gotoBlocks = [...blocksContainer.querySelectorAll("[data-block-type='sectionGoto']")];
 
-    gotoBlocks.forEach((goto) => {
-        const sectionId = goto.dataset.sectionId;
-        const select = goto.querySelector(".section-goto-select");
+//     gotoBlocks.forEach((goto) => {
+//         const sectionId = goto.dataset.sectionId;
+//         const select = goto.querySelector(".section-goto-select");
 
-        select.innerHTML = "";
+//         select.innerHTML = "";
 
-        const nextOption = document.createElement("option");
-        nextOption.value = "next";
-        nextOption.textContent = "다음 섹션으로 진행하기";
-        select.appendChild(nextOption);
+//         const nextOption = document.createElement("option");
+//         nextOption.value = "next";
+//         nextOption.textContent = "다음 섹션으로 진행하기";
+//         select.appendChild(nextOption);
 
-        sections.forEach((s) => {
-            const sid = s.dataset.sectionId;
-            const title = s.querySelector(".section-title-input")?.value || "제목 없음";
+//         sections.forEach((s) => {
+//             const sid = s.dataset.sectionId;
+//             const title = s.querySelector(".section-title-input")?.value || "제목 없음";
 
-            const opt = document.createElement("option");
-            opt.value = sid; // sectionId
-            opt.textContent = `섹션 ${sid} (${title})`;
+//             const opt = document.createElement("option");
+//             opt.value = sid;
+//             opt.textContent = `섹션 ${sid} (${title})`;
 
-            if (sid === sectionId) return;
+//             if (sid === sectionId) return;
 
-            select.appendChild(opt);
-        });
+//             select.appendChild(opt);
+//         });
 
-        const submitOpt = document.createElement("option");
-        submitOpt.value = "submit";
-        submitOpt.textContent = "설문지 제출";
-        select.appendChild(submitOpt);
-    });
-}
+//         const submitOpt = document.createElement("option");
+//         submitOpt.value = "submit";
+//         submitOpt.textContent = "설문지 제출";
+//         select.appendChild(submitOpt);
+//     });
+// }
 
 function deleteSectionWithChildren(sectionId) {
     const blocks = [...blocksContainer.children];
@@ -893,22 +891,22 @@ function deleteSectionWithChildren(sectionId) {
         }
     }
 
-    [...blocksContainer.querySelectorAll("[data-block-type='sectionGoto']")].forEach((g) => {
-        if (g.dataset.sectionId === sectionId) g.remove();
-    });
+    // [...blocksContainer.querySelectorAll("[data-block-type='sectionGoto']")].forEach((g) => {
+    //     if (g.dataset.sectionId === sectionId) g.remove();
+    // });
 
-    updateGotoOptionsAll();
+    // updateGotoOptionsAll();
     regenerateOrderNumbers();
 }
 
-function toggleGotoVisibility() {
-    const count = blocksContainer.querySelectorAll("[data-block-type='section']").length;
+// function toggleGotoVisibility() {
+//     const count = blocksContainer.querySelectorAll("[data-block-type='section']").length;
 
-    const gotoBlocks = blocksContainer.querySelectorAll("[data-block-type='sectionGoto']");
-    gotoBlocks.forEach((g) => {
-        g.style.display = count > 1 ? "block" : "none";
-    });
-}
+//     const gotoBlocks = blocksContainer.querySelectorAll("[data-block-type='sectionGoto']");
+//     gotoBlocks.forEach((g) => {
+//         g.style.display = count > 1 ? "flex" : "none";
+//     });
+// }
 
 function getSectionIdOfBlock(block) {
     if (!block) return firstSectionId;
@@ -1022,10 +1020,12 @@ sideAddQuestionBtn?.addEventListener("click", async () => {
 
 sideAddSectionBtn?.addEventListener("click", async () => {
     try {
+        const sectionCount = blocksContainer.querySelectorAll("[data-block-type='section']").length;
+
         const res = await FormAPI.addSection(formId, {
             title: "제목없는 섹션",
             description: "",
-            order_num: 1,
+            order_num: sectionCount + 1,
         });
 
         const s = res.section ?? res;
@@ -1047,12 +1047,15 @@ window.addEventListener("DOMContentLoaded", async () => {
         const res = await FormAPI.getFormStructure(formId);
         const data = res;
 
-        if (formTitleInput) {
-            formTitleInput.innerHTML = data.title || "";
+        const titleBlock = blocksContainer.querySelector("[data-block-type='title']");
+
+        if (titleBlock) {
+            blocksContainer.innerHTML = "";
+            blocksContainer.appendChild(titleBlock);
         }
-        if (formDescriptionInput) {
-            formDescriptionInput.innerHTML = data.description || "";
-        }
+
+        if (formTitleInput) formTitleInput.innerHTML = data.title || "";
+        if (formDescriptionInput) formDescriptionInput.innerHTML = data.description || "";
 
         formTitleInput.addEventListener("blur", async () => {
             await FormAPI.updateForm(formId, { title: formTitleInput.innerHTML.trim() });
@@ -1060,11 +1063,6 @@ window.addEventListener("DOMContentLoaded", async () => {
 
         formDescriptionInput.addEventListener("blur", async () => {
             await FormAPI.updateForm(formId, { description: formDescriptionInput.innerHTML.trim() });
-        });
-
-        const titleBlock = blocksContainer.querySelector("[data-block-type='title']");
-        [...blocksContainer.children].forEach((b) => {
-            if (b !== titleBlock) b.remove();
         });
 
         if (!data.sections || data.sections.length === 0) {
@@ -1101,7 +1099,7 @@ window.addEventListener("DOMContentLoaded", async () => {
                 description: q.description,
                 question_type: q.question_type,
                 is_required: q.is_required,
-                sectionId: s.section_id,
+                sectionId: section.section_id,
                 settings: q.settings || {},
             });
 
@@ -1109,49 +1107,65 @@ window.addEventListener("DOMContentLoaded", async () => {
             updateDebug();
             return;
         }
+
         firstSectionId = data.sections[0].section_id;
 
-        const invisibleSection = document.createElement("div");
-        invisibleSection.dataset.blockType = "section";
-        invisibleSection.dataset.sectionId = firstSectionId;
-        invisibleSection.style.display = "none";
-        blocksContainer.appendChild(invisibleSection);
+        const invisible = document.createElement("div");
+        invisible.dataset.blockType = "section";
+        invisible.dataset.sectionId = firstSectionId;
+        invisible.style.display = "none";
+        blocksContainer.appendChild(invisible);
 
         for (const s of data.sections) {
-            if (s.section_id === firstSectionId) continue;
+            if (s.section_id === firstSectionId) {
+                for (const q of s.questions || []) {
+                    createQuestionBlock(
+                        {
+                            questionId: q.question_id,
+                            question_text: q.question_text,
+                            description: q.description,
+                            question_type: q.question_type,
+                            is_required: q.is_required,
+                            sectionId: s.section_id,
+                            settings: q.settings || {},
+                        },
+                        findLastBlockOfSection(firstSectionId)
+                    );
+                }
+                continue;
+            }
 
             createSectionBlock({
                 sectionId: s.section_id,
                 title: s.title,
                 description: s.description,
             });
-        }
 
-        for (const s of data.sections) {
-            if (!s.questions) continue;
-
-            for (const q of s.questions) {
-                createQuestionBlock({
-                    questionId: q.question_id,
-                    question_text: q.question_text,
-                    description: q.description,
-                    question_type: q.question_type,
-                    is_required: q.is_required,
-                    sectionId: s.section_id,
-                    settings: q.settings || {},
-                });
+            for (const q of s.questions || []) {
+                createQuestionBlock(
+                    {
+                        questionId: q.question_id,
+                        question_text: q.question_text,
+                        description: q.description,
+                        question_type: q.question_type,
+                        is_required: q.is_required,
+                        sectionId: s.section_id,
+                        settings: q.settings || {},
+                    },
+                    findLastBlockOfSection(s.section_id)
+                );
             }
         }
 
-        for (const s of data.sections) {
-            if (s.section_id !== firstSectionId) {
-                createGotoBlockForSection(s.section_id);
-            }
-        }
+        // for (const s of data.sections) {
+        //     if (s.section_id !== firstSectionId) {
+        //         createGotoBlockForSection(s.section_id);
+        //     }
+        // }
 
         regenerateOrderNumbers();
-        updateGotoOptionsAll();
-        toggleGotoVisibility();
+        // updateGotoOptionsAll();
+        // toggleGotoVisibility();
         updateDebug();
     } catch (err) {
         alert("폼 구조를 불러오는 중 오류가 발생했습니다.");

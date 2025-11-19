@@ -33,6 +33,13 @@
     border-radius: 8px;
 }
 
+.block-qeustion-card {
+    border-bottom: none;
+    transition: 0.15s;
+    border-radius: 8px;
+}
+
+.block-qeustion-card:focus-within,
 .block-card:focus-within {
     box-shadow:
         0 2px 1px -1px rgba(0, 0, 0, 0.2),
@@ -40,6 +47,7 @@
         0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
+.block-qeustion-card:not(:focus-within) .form-input-base,
 .block-card:not(:focus-within) .form-input-base {
     border-bottom-color: transparent;
 }
@@ -155,6 +163,22 @@
     background: #e8f0fe;
     color: #1967d2;
 }
+
+/* .goto {
+    flex-direction: row;
+    align-items: center;
+}
+
+.section-goto-select {
+    margin-left: 10px;
+    width: 40%;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.section-goto-select:focus {
+    outline: none;
+} */
 
 .floating-menu {
     position: fixed;
