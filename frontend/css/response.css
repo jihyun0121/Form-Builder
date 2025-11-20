@@ -2,6 +2,11 @@
     display: none;
 }
 
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
 .responses-container {
     width: 100%;
     max-width: 770px;
@@ -22,6 +27,13 @@
 .response-title {
     font-size: 28px;
     font-weight: 600;
+}
+
+.response-titles {
+    border-top: 10px solid var(--form-theme-color);
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 12px 24px;
 }
 
 .response-page {
@@ -68,11 +80,6 @@
 
 .responses-tab {
     display: none;
-    padding: 24px;
-    background: #fff;
-    border-radius: 8px;
-    border: 1px solid rgb(218, 220, 224);
-    margin-bottom: 24px;
 }
 
 .responses-tab.active {
@@ -97,4 +104,10 @@
 
 .icon-btn:hover {
     background: #f5f5f5;
+}
+
+.res-card {
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 24px;
 }
