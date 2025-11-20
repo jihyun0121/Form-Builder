@@ -148,17 +148,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const previewHeaderBtn = document.getElementById("previewHeaderBtn");
 previewHeaderBtn?.addEventListener("click", () => {
-    alert("미리보기 모드");
+    const formId = new URLSearchParams(location.search).get("formId");
+    if (!formId) {
+        alert("폼 ID를 찾을 수 없습니다.");
+        return;
+    }
+    window.open(`/frontend/html/preview.html?formId=${formId}`, "_blank");
 });
 
 const originalUrlInput = document.getElementById("originalUrl");
 const shortUrlInput = document.getElementById("shortUrl");
 const copyUrlBtn = document.getElementById("copyUrlBtn");
+const publishBtn = document.getElementById("shareFormBtn");
+const unpublishBtn = document.getElementById("unpublishBtn");
 
-if (originalUrlInput) {
-    originalUrlInput.value = window.location.href.replace(/#.*$/, "");
-    shortUrlInput.value = originalUrlInput.value;
+function getFormId() {
+    return new URLSearchParams(location.search).get("formId");
 }
+
+function setAnswerLink() {
+    const formId = getFormId();
+    if (!formId) return;
+
+    const answerUrl = `${location.origin}/frontend/html/answer.html?formId=${formId}`;
+    originalUrlInput.value = answerUrl;
+    shortUrlInput.value = answerUrl;
+}
+
+setAnswerLink();
 
 copyUrlBtn?.addEventListener("click", async () => {
     try {
@@ -169,18 +186,50 @@ copyUrlBtn?.addEventListener("click", async () => {
     }
 });
 
-document.getElementById("manageFormBtn")?.addEventListener("click", () => {
-    alert("폼 관리 기능");
+const publishToggleBtn = document.getElementById("publishToggleBtn");
+const publishToggleAction = document.getElementById("publishToggleAction");
+
+async function updatePublishUI() {
+    const formId = getFormId();
+    if (!formId) return;
+
+    try {
+        const form = await FormAPI.getFormById(formId);
+
+        if (form.is_public) {
+            publishToggleAction.textContent = "게시 취소";
+            publishToggleAction.dataset.action = "unpublish";
+        } else {
+            publishToggleAction.textContent = "게시하기";
+            publishToggleAction.dataset.action = "publish";
+        }
+    } catch (err) {
+        console.error("폼 정보 로드 실패:", err);
+    }
+}
+
+publishToggleAction.addEventListener("click", async () => {
+    const formId = getFormId();
+    if (!formId) return;
+
+    const action = publishToggleAction.dataset.action;
+
+    try {
+        if (action === "publish") {
+            await FormAPI.updateForm(formId, { is_public: true });
+            alert("게시 완료!");
+        } else {
+            if (!confirm("정말 게시를 취소할까요?")) return;
+            await FormAPI.updateForm(formId, { is_public: false });
+            alert("게시 취소 완료");
+        }
+
+        // 버튼 UI 업데이트
+        updatePublishUI();
+    } catch (err) {
+        console.error(err);
+        alert("처리 중 오류가 발생했습니다.");
+    }
 });
 
-document.getElementById("shareFormBtn")?.addEventListener("click", () => {
-    alert("폼 공유 설정");
-});
-
-document.getElementById("moveToTrashBtn")?.addEventListener("click", () => {
-    if (confirm("휴지통으로 이동할까요?")) alert("휴지통으로 이동됨");
-});
-
-document.getElementById("unpublishBtn")?.addEventListener("click", () => {
-    if (confirm("양식 게시를 취소할까요?")) alert("게시 취소됨");
-});
+window.addEventListener("DOMContentLoaded", updatePublishUI);
