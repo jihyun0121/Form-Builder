@@ -442,7 +442,6 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
     card.dataset.blockType = "question";
     card.dataset.questionId = initial.questionId || generateTempId("q");
 
-    // settings는 무조건 _settings 로 사용
     card._settings = initial.settings || JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[initial.question_type || "SHORT_TEXT"]));
 
     const sectionId = initial.sectionId || firstSectionId;
@@ -523,15 +522,12 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
         </div>
     `;
 
-    // 기본 타입 세팅
     card.querySelector(".question-type-select").value = initial.question_type || "SHORT_TEXT";
 
-    // 이벤트 부착
     attachQuestionEvents(card);
     renderChoiceEditor(card);
     attachChoiceOptionEvents(card);
 
-    // DOM에 삽입
     if (insertAfter) blocksContainer.insertBefore(card, insertAfter.nextElementSibling);
     else blocksContainer.appendChild(card);
 

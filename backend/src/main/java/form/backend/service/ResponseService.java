@@ -23,65 +23,65 @@ public class ResponseService {
 
     public Response addResponse(Long formId, ResponseDTO dto) {
         User user = null;
-    
+
         if (dto.getUserId() != null) {
             user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다"));
         }
-    
+
         Form form = formRepository.findById(formId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."));
-    
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 설문입니다."));
+
         Response response = Response.builder()
                 .form(form)
-                .user(user) // null 가능
+                .user(user)
                 .build();
-    
+
         return responseRepository.save(response);
     }
-    
 
     public List<ResponseDTO> getResponseByFormId(Long formId) {
         List<Response> responses = responseRepository.findByForm_FormId(formId);
 
-		return responses.stream()
-			.map(response -> ResponseDTO.builder()
-                .responseId(response.getResponseId())
-				.formId(response.getForm().getFormId())
-				.userId(response.getUser() != null ? response.getUser().getUserId() : null)
-                .createdAt(response.getCreatedAt())
-				.build())
-			.toList();
-	}
+        return responses.stream()
+                .map(response -> ResponseDTO.builder()
+                        .responseId(response.getResponseId())
+                        .formId(response.getForm().getFormId())
+                        .userId(response.getUser() != null ? response.getUser().getUserId() : null)
+                        .createdAt(response.getCreatedAt())
+                        .build())
+                .toList();
+    }
 
-	public ResponseDTO getResponseById(Long responseId) {
-		Response response = responseRepository.findById(responseId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 응답이 존재하지 않습니다"));
+    public ResponseDTO getResponseById(Long responseId) {
+        Response response = responseRepository.findById(responseId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 응답이 존재하지 않습니다"));
 
-		return ResponseDTO.builder()
-            .responseId(response.getResponseId())
-			.formId(response.getForm().getFormId())
-			.userId(response.getUser() != null ? response.getUser().getUserId() : null)
-			.createdAt(response.getCreatedAt())
-			.build();
-	}
-
-    public List<ResponseDTO> getResponseByUserId(Long userId) {
-        List<Response> responses = responseRepository.findByUser_UserId(userId);
-
-		return responses.stream()
-			.map(response -> ResponseDTO.builder()
+        return ResponseDTO.builder()
                 .responseId(response.getResponseId())
                 .formId(response.getForm().getFormId())
                 .userId(response.getUser() != null ? response.getUser().getUserId() : null)
                 .createdAt(response.getCreatedAt())
-				.build())
-			.toList();
-	}
+                .build();
+    }
+
+    public List<ResponseDTO> getResponseByUserId(Long userId) {
+        List<Response> responses = responseRepository.findByUser_UserId(userId);
+
+        return responses.stream()
+                .map(response -> ResponseDTO.builder()
+                        .responseId(response.getResponseId())
+                        .formId(response.getForm().getFormId())
+                        .userId(response.getUser() != null ? response.getUser().getUserId() : null)
+                        .createdAt(response.getCreatedAt())
+                        .build())
+                .toList();
+    }
 
     @Transactional
     public void deleteResponse(Long responseId) {
-        Response response = responseRepository.findById(responseId).orElseThrow(() -> new IllegalArgumentException("해당 응답을 찾을 수 없습니다"));
+        Response response = responseRepository.findById(responseId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 응답을 찾을 수 없습니다"));
         responseRepository.delete(response);
     }
 }

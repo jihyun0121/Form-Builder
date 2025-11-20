@@ -224,7 +224,6 @@ publishToggleAction.addEventListener("click", async () => {
             alert("게시 취소 완료");
         }
 
-        // 버튼 UI 업데이트
         updatePublishUI();
     } catch (err) {
         console.error(err);

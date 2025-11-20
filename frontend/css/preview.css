@@ -3,14 +3,12 @@
     --form-bg-color: #f0ebf8;
 }
 
-/* 페이지 전체 */
 body {
     background: var(--form-bg-color);
     margin: 0;
     padding: 0;
 }
 
-/* 가운데 정렬 컨테이너 */
 .form-page-container {
     width: 100%;
     max-width: 770px;
@@ -18,7 +16,6 @@ body {
     padding: 0 16px;
 }
 
-/* 헤더 카드 */
 .form-header {
     background: #fff;
     border-radius: 8px;
@@ -39,7 +36,6 @@ body {
     font-size: 15px;
 }
 
-/* 섹션 영역 */
 .section-block {
     display: none;
     margin-bottom: 12px;
@@ -49,7 +45,6 @@ body {
     display: block;
 }
 
-/* 섹션 타이틀 */
 .section-block h5 {
     background: var(--form-theme-color);
     color: white;
@@ -59,7 +54,6 @@ body {
     font-weight: 600;
 }
 
-/* 질문 카드 */
 .question-block {
     background: #fff;
     border-radius: 8px;

@@ -38,7 +38,6 @@ body {
     margin-bottom: 12px;
 }
 
-/* 섹션 카드 */
 .section-block {
     margin-bottom: 12px;
     display: none;
@@ -55,7 +54,6 @@ body {
     padding: 12px 24px;
 }
 
-/* 질문 블록 */
 .question-block {
     background: white;
     border-radius: 8px;
@@ -86,7 +84,6 @@ body {
     resize: vertical;
 }
 
-/* 라디오/체크박스 */
 .form-check {
     margin-bottom: 6px;
 }
