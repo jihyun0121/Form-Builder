@@ -15,7 +15,8 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @PostMapping("/responses/{responseId}/answers")
-    public ResponseEntity<?> addAnswers(@PathVariable Long responseId, @RequestBody List<AnswerDTO> answers) {
+    public ResponseEntity<?> addAnswers(@PathVariable("responseId") Long responseId,
+            @RequestBody List<AnswerDTO> answers) {
         try {
             int count = answerService.saveAnswers(responseId, answers);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
@@ -30,7 +31,7 @@ public class AnswerController {
     }
 
     @GetMapping("/questions/{questionId}/answers")
-    public ResponseEntity<?> getAnswerByQuestionId(@PathVariable Long questionId) {
+    public ResponseEntity<?> getAnswerByQuestionId(@PathVariable("questionId") Long questionId) {
         try {
             return ResponseEntity.ok(answerService.getAnswerByQuestionId(questionId));
         } catch (Exception e) {
@@ -39,7 +40,7 @@ public class AnswerController {
     }
 
     @GetMapping("/responses/{responseId}/answers")
-    public ResponseEntity<?> getAnswerByResponseId(@PathVariable Long responseId) {
+    public ResponseEntity<?> getAnswerByResponseId(@PathVariable("responseId") Long responseId) {
         try {
             return ResponseEntity.ok(answerService.getAnswerByResponseId(responseId));
         } catch (Exception e) {
@@ -48,7 +49,7 @@ public class AnswerController {
     }
 
     @PutMapping("responses/{responseId}/answers")
-    public ResponseEntity<?> updateAnswers(@PathVariable Long responseId, @RequestParam Long userId,
+    public ResponseEntity<?> updateAnswers(@PathVariable("responseId") Long responseId, @RequestParam Long userId,
             @RequestBody List<AnswerDTO> dtos) {
         try {
             int count = answerService.updateAnswers(responseId, userId, dtos);

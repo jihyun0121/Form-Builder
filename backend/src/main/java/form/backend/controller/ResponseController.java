@@ -16,16 +16,16 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @PostMapping("/forms/{formId}/responses")
-    public ResponseEntity<?> addResponse(@PathVariable Long formId, @RequestBody ResponseDTO dto) {
+    public ResponseEntity<?> addResponse(@PathVariable("userId") Long formId, @RequestBody ResponseDTO dto) {
         try {
             Response response = responseService.addResponse(formId, dto);
 
             ResponseDTO newResponse = ResponseDTO.builder()
-                .responseId(response.getResponseId())
-                .formId(formId)
-                .userId(response.getUser() != null ? response.getUser().getUserId() : null)
-                .createdAt(response.getCreatedAt())
-                .build();
+                    .responseId(response.getResponseId())
+                    .formId(formId)
+                    .userId(response.getUser() != null ? response.getUser().getUserId() : null)
+                    .createdAt(response.getCreatedAt())
+                    .build();
 
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(Map.of("message", "응답 생성되었습니다", "response", newResponse));
@@ -38,7 +38,7 @@ public class ResponseController {
     }
 
     @GetMapping("/forms/{formId}/responses")
-    public ResponseEntity<?> getResponseByFormId(@PathVariable Long formId) {
+    public ResponseEntity<?> getResponseByFormId(@PathVariable("userId") Long formId) {
         try {
             List<ResponseDTO> responses = responseService.getResponseByFormId(formId);
             return ResponseEntity.ok(responses);
@@ -48,7 +48,7 @@ public class ResponseController {
     }
 
     @GetMapping("/responses/{responseId}")
-    public ResponseEntity<?> getResponseById(@PathVariable Long responseId) {
+    public ResponseEntity<?> getResponseById(@PathVariable("responseId") Long responseId) {
         try {
             ResponseDTO response = responseService.getResponseById(responseId);
             return ResponseEntity.ok(response);
@@ -58,7 +58,7 @@ public class ResponseController {
     }
 
     @GetMapping("/users/{userId}/responses")
-    public ResponseEntity<?> getResponseByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getResponseByUserId(@PathVariable("userId") Long userId) {
         try {
             List<ResponseDTO> forms = responseService.getResponseByUserId(userId);
             return ResponseEntity.ok(forms);
@@ -68,7 +68,7 @@ public class ResponseController {
     }
 
     @DeleteMapping("/responses/{responseId}")
-    public ResponseEntity<?> deleteResponse(@PathVariable Long responseId){
+    public ResponseEntity<?> deleteResponse(@PathVariable("responseId") Long responseId) {
         try {
             responseService.deleteResponse(responseId);
             return ResponseEntity.ok(Map.of("message", "응답이 삭제되었습니다", "response_id", responseId));

@@ -17,7 +17,7 @@ public class SectionController {
     private final SectionService sectionService;
 
     @PostMapping("/forms/{formId}/sections")
-    public ResponseEntity<?> addSection(@PathVariable Long formId, @RequestBody SectionDTO dto) {
+    public ResponseEntity<?> addSection(@PathVariable("formId") Long formId, @RequestBody SectionDTO dto) {
         try {
             Section section = sectionService.addSection(formId, dto);
             SectionDTO newSection = SectionDTO.builder()
@@ -27,7 +27,8 @@ public class SectionController {
                     .description(section.getDescription())
                     .orderNum(section.getOrderNum())
                     .build();
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "섹션이 생성되었습니다", "section", newSection));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of("message", "섹션이 생성되었습니다", "section", newSection));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
@@ -36,7 +37,7 @@ public class SectionController {
     }
 
     @GetMapping("/forms/{formId}/sections")
-    public ResponseEntity<?> getFormSection(@PathVariable Long formId) {
+    public ResponseEntity<?> getFormSection(@PathVariable("formId") Long formId) {
         try {
             List<SectionDTO> sections = sectionService.getFormSection(formId);
             return ResponseEntity.ok(sections);
@@ -46,7 +47,7 @@ public class SectionController {
     }
 
     @PutMapping("/sections/{sectionId}")
-    public ResponseEntity<?> updateSection(@PathVariable Long sectionId, @RequestBody SectionDTO dto) {
+    public ResponseEntity<?> updateSection(@PathVariable("sectionId") Long sectionId, @RequestBody SectionDTO dto) {
         try {
             Section updatedSection = sectionService.updateSection(sectionId, dto);
 
@@ -66,7 +67,7 @@ public class SectionController {
     }
 
     @DeleteMapping("/sections/{sectionId}")
-    public ResponseEntity<?> deleteSection(@PathVariable Long sectionId) {
+    public ResponseEntity<?> deleteSection(@PathVariable("sectionId") Long sectionId) {
         try {
             sectionService.deleteSection(sectionId);
             return ResponseEntity.ok(Map.of("message", "섹션이 삭제되었습니다", "section_id", sectionId));

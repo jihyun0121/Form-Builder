@@ -16,7 +16,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @PostMapping("/forms/{formId}/question")
-    public ResponseEntity<?> addQuestion(@PathVariable Long formId, @RequestBody QuestionDTO dto) {
+    public ResponseEntity<?> addQuestion(@PathVariable("formId") Long formId, @RequestBody QuestionDTO dto) {
         try {
             Question question = questionService.addQuestion(formId, dto);
 
@@ -42,7 +42,7 @@ public class QuestionController {
     }
 
     @GetMapping("/forms/{formId}/questions")
-    public ResponseEntity<?> getQuestionByFormId(@PathVariable Long formId) {
+    public ResponseEntity<?> getQuestionByFormId(@PathVariable("formId") Long formId) {
         try {
             List<QuestionDTO> questions = questionService.getQuestionByFormId(formId);
             return ResponseEntity.ok(questions);
@@ -52,7 +52,7 @@ public class QuestionController {
     }
 
     @PutMapping("/questions/{questionId}")
-    public ResponseEntity<?> updateQuestion(@PathVariable Long questionId, @RequestBody QuestionDTO dto) {
+    public ResponseEntity<?> updateQuestion(@PathVariable("questionId") Long questionId, @RequestBody QuestionDTO dto) {
         try {
             Question updated = questionService.updateQuestion(questionId, dto);
             QuestionDTO response = QuestionDTO.builder()
@@ -75,7 +75,7 @@ public class QuestionController {
     }
 
     @DeleteMapping("/questions/{questionId}")
-    public ResponseEntity<?> deleteQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<?> deleteQuestion(@PathVariable("questionId") Long questionId) {
         try {
             questionService.deleteQuestion(questionId);
             return ResponseEntity.ok(Map.of("message", "문항이 삭제되었습니다", "question_id", questionId));

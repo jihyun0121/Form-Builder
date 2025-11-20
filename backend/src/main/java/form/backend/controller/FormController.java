@@ -52,7 +52,7 @@ public class FormController {
     }
 
     @GetMapping("/{formId}")
-    public ResponseEntity<?> getFormById(@PathVariable Long formId) {
+    public ResponseEntity<?> getFormById(@PathVariable("formId") Long formId) {
         try {
             FormDTO form = formService.getFormById(formId);
             return ResponseEntity.ok(form);
@@ -72,7 +72,7 @@ public class FormController {
     }
 
     @GetMapping("/{formId}/structure")
-    public ResponseEntity<?> getFormStructure(@PathVariable Long formId) {
+    public ResponseEntity<?> getFormStructure(@PathVariable("formId") Long formId) {
         try {
             FormStructureDTO structure = formService.getFormStructure(formId);
             return ResponseEntity.ok(structure);
@@ -88,7 +88,7 @@ public class FormController {
     }
 
     @PutMapping("/{formId}")
-    public ResponseEntity<?> updateForm(@PathVariable Long formId, @RequestBody FormDTO dto) {
+    public ResponseEntity<?> updateForm(@PathVariable("formId") Long formId, @RequestBody FormDTO dto) {
         try {
             Form updatedForm = formService.updateForm(formId, dto);
             FormDTO response = FormDTO.builder()
@@ -108,7 +108,7 @@ public class FormController {
     }
 
     @DeleteMapping("/{formId}")
-    public ResponseEntity<?> deleteForm(@PathVariable Long formId) {
+    public ResponseEntity<?> deleteForm(@PathVariable("formId") Long formId) {
         try {
             formService.deleteForm(formId);
             return ResponseEntity.ok(Map.of("message", "설문이 삭제되었습니다", "form_id", formId));
