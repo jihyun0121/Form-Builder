@@ -16,7 +16,7 @@ public class ResponseController {
     private final ResponseService responseService;
 
     @PostMapping("/forms/{formId}/responses")
-    public ResponseEntity<?> addResponse(@PathVariable("userId") Long formId, @RequestBody ResponseDTO dto) {
+    public ResponseEntity<?> addResponse(@PathVariable("formId") Long formId, @RequestBody ResponseDTO dto) {
         try {
             Response response = responseService.addResponse(formId, dto);
 
@@ -38,7 +38,7 @@ public class ResponseController {
     }
 
     @GetMapping("/forms/{formId}/responses")
-    public ResponseEntity<?> getResponseByFormId(@PathVariable("userId") Long formId) {
+    public ResponseEntity<?> getResponseByFormId(@PathVariable("formId") Long formId) {
         try {
             List<ResponseDTO> responses = responseService.getResponseByFormId(formId);
             return ResponseEntity.ok(responses);
