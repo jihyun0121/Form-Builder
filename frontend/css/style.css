@@ -1,3 +1,8 @@
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -12,43 +17,13 @@
     justify-content: center;
 }
 
+.container {
+    margin-left: 180px;
+}
+
 .navbar-brand i {
     font-size: 24px;
     line-height: 1;
-}
-
-.search-box {
-    width: 100%;
-    max-width: 720px;
-    height: 48px;
-    background-color: #f0f4f9;
-    border-radius: 28px;
-    padding: 0 12px;
-    display: flex;
-    align-items: center;
-}
-
-.search-input {
-    background: transparent;
-    border: none;
-    font-size: 16px;
-    height: 46px;
-}
-
-.search-input:focus {
-    outline: none;
-    background: transparent;
-}
-
-.bi-search {
-    margin-right: 8px;
-    font-size: 18px;
-}
-
-.main-wrapper {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 16px;
 }
 
 .section-title {
@@ -64,24 +39,23 @@
     margin-bottom: 24px;
 }
 
-.template-card {
-    border: 2px dashed #cfd8dc;
-    transition: all 0.2s ease-in-out;
-    cursor: pointer;
-    height: 100%;
-    border-radius: 12px;
-}
-
-.template-card:hover {
-    border-color: #673ab7;
-    background-color: #f8fbff;
-    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.08);
+.empty-temp {
+    display: flex;
+    flex-direction: column;
 }
 
 .temp-image {
-    width: 100%;
-    padding-right: 19px;
-    padding-bottom: 24px;
+    max-width: 163px;
+    margin-right: 19px;
+    margin-bottom: 10px;
+    border: 1px solid #cfd8dc;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.temp-image:hover {
+    border-color: var(--form-theme-color);
+    background-color: #f8fbff;
 }
 
 .recent-container {
@@ -99,7 +73,7 @@
 }
 
 .recent-card:hover {
-    box-shadow: 0 0 0 0.5px #673ab7 inset;
+    box-shadow: 0 0 0 0.5px var(--form-theme-color) inset;
 }
 
 .recent-title {
@@ -129,4 +103,9 @@
 
 .no-propagation:hover {
     background: #f1f3f4;
+}
+
+.delete-btn {
+    border-radius: 0;
+    width: 100%;
 }

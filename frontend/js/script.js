@@ -1,5 +1,4 @@
 const recentListEl = document.getElementById("recentList");
-const searchInputEl = document.getElementById("searchInput");
 const noResultEl = document.getElementById("noResultMessage");
 const emptyTemplateCardEl = document.getElementById("emptyTemplateCard");
 
@@ -121,21 +120,6 @@ function renderRecentForms(list) {
         recentListEl.appendChild(col);
     });
 }
-
-function handleSearch() {
-    const keyword = searchInputEl.value.trim().toLowerCase();
-
-    if (keyword === "") {
-        renderRecentForms(recentForms);
-        return;
-    }
-
-    const filtered = recentForms.filter((form) => form.title.toLowerCase().includes(keyword));
-
-    renderRecentForms(filtered);
-}
-
-searchInputEl.addEventListener("input", handleSearch);
 
 emptyTemplateCardEl.addEventListener("click", async () => {
     try {

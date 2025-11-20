@@ -161,11 +161,6 @@ function renderOptionSettings(card) {
         const targets = getBranchingTargets();
 
         container.innerHTML = `
-            <div class="mb-2">
-                <label class="form-label small mb-1">선택지 (줄바꿈으로 구분)</label>
-                <textarea class="form-control form-control-sm opt-options-textarea" rows="3">${s.options.join("\n")}</textarea>
-            </div>
-
             <div class="mb-2 d-flex align-items-center gap-3 flex-wrap">
                 <div class="form-check">
                     <input class="form-check-input opt-randomize-options" type="checkbox" ${s.randomize_options ? "checked" : ""}>
@@ -188,12 +183,12 @@ function renderOptionSettings(card) {
                         : ""
                 }
             </div>
-
             <div class="mt-3">
+            <!--
                 <div class="form-check mb-2">
                     <input class="form-check-input opt-use-branching" type="checkbox" ${Object.keys(s.branching).length ? "checked" : ""}>
-                    <label class="form-check-label small">답변을 기준으로 섹션 이동 (분기)</label>
-                </div>
+                    <label class="form-check-label small">답변을 기준으로 섹션 이동</label>
+                </div> -->
                 <div class="opt-branching-area ${Object.keys(s.branching).length ? "" : "d-none"}">
                     <table class="table table-sm mb-0">
                         <thead>
@@ -502,10 +497,8 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
                 ${renderPreview(initial.question_type || "SHORT_TEXT", card._settings)}
             </div>
 
-            <!-- 옵션 리스트(Editor) -->
             <div class="question-choice-editor mt-1"></div>
 
-            <!-- 추가 옵션 패널 -->
             <div class="question-options-panel mt-3 d-none">
                 <div class="option-settings-container"></div>
             </div>
@@ -604,10 +597,6 @@ function renderPreview(type, settings = {}) {
         return opts
             .map(
                 (label) => `
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" disabled>
-                    <label class="form-input-base form-check-label small">${label}</label>
-                </div>
             `
             )
             .join("");
@@ -618,10 +607,6 @@ function renderPreview(type, settings = {}) {
         return opts
             .map(
                 (label) => `
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" disabled>
-                    <label class="form-input-base form-check-label small">${label}</label>
-                </div>
             `
             )
             .join("");

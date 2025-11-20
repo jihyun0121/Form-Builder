@@ -14,34 +14,33 @@
                 <a class="navbar-brand d-flex align-items-center" href="/frontend/html/">
                     <i class="bi bi-ui-checks-grid me-2"></i>
                 </a>
-
-                <div class="input-group search-box">
-                    <i class="bi bi-search"></i>
-                    <input type="text" class="search-input form-control" id="searchInput" placeholder="검색" />
-                </div>
             </div>
         </nav>
 
         <main class="main-wrapper">
             <section class="template-container">
-                <div class="section-title">새 양식 시작하기</div>
+                <div style="max-width: 960px; margin: 0 auto">
+                    <div class="section-title">새 양식 시작하기</div>
 
-                <div class="row g-3">
-                    <div class="col-6 col-sm-4 col-md-3">
-                        <img class="temp-image" src="https://ssl.gstatic.com/docs/templates/thumbnails/forms-blank-googlecolors.png" alt="" />
-                        <span class="fw-semibold">빈 양식</span>
+                    <div class="g-3">
+                        <div class="empty-temp col-6 col-sm-4 col-md-3">
+                            <img id="emptyTemplateCard" class="temp-image" src="https://ssl.gstatic.com/docs/templates/thumbnails/forms-blank-googlecolors.png" alt="" />
+                            <span class="fw-semibold">빈 양식</span>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <section class="recent-container">
-                <div class="mb-2">
-                    <h3 class="section-title">최근 설문지</h3>
+                <div style="max-width: 960px; margin: 0 auto">
+                    <div class="mb-2">
+                        <h3 class="section-title">최근 설문지</h3>
+                    </div>
+
+                    <div id="recentList" class="row g-3"></div>
+
+                    <div id="noResultMessage" class="no-result d-none">최근에 수정하거나 만든 설문이 없습니다</div>
                 </div>
-
-                <div id="recentList" class="row g-3"></div>
-
-                <div id="noResultMessage" class="no-result d-none">최근에 수정하거나 만든 설문이 없습니다</div>
             </section>
         </main>
 
