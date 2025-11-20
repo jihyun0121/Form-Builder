@@ -23,13 +23,13 @@ public class FormController {
             Form form = formService.createForm(dto);
 
             FormDTO newForm = FormDTO.builder()
-                .formId(form.getFormId())
-                .title(form.getTitle())
-                .description(form.getDescription())
-                .userId(form.getUser().getUserId())
-                .isPublic(form.isPublic())
-                .createdAt(form.getCreatedAt())
-                .build();
+                    .formId(form.getFormId())
+                    .title(form.getTitle())
+                    .description(form.getDescription())
+                    .userId(form.getUser().getUserId())
+                    .isPublic(form.isPublic())
+                    .createdAt(form.getCreatedAt())
+                    .build();
 
             return ResponseEntity
                     .status(HttpStatus.CREATED)
@@ -62,7 +62,7 @@ public class FormController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getFormByUserId(@PathVariable Long userId) {
+    public ResponseEntity<?> getFormByUserId(@PathVariable("userId") Long userId) {
         try {
             List<FormDTO> forms = formService.getFormByUserId(userId);
             return ResponseEntity.ok(forms);
@@ -70,6 +70,7 @@ public class FormController {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
+
     @GetMapping("/{formId}/structure")
     public ResponseEntity<?> getFormStructure(@PathVariable Long formId) {
         try {
@@ -91,13 +92,13 @@ public class FormController {
         try {
             Form updatedForm = formService.updateForm(formId, dto);
             FormDTO response = FormDTO.builder()
-                .formId(updatedForm.getFormId())
-                .title(updatedForm.getTitle())
-                .description(updatedForm.getDescription())
-                .userId(updatedForm.getUser().getUserId())
-                .isPublic(updatedForm.isPublic())
-                .createdAt(updatedForm.getCreatedAt())
-                .build();
+                    .formId(updatedForm.getFormId())
+                    .title(updatedForm.getTitle())
+                    .description(updatedForm.getDescription())
+                    .userId(updatedForm.getUser().getUserId())
+                    .isPublic(updatedForm.isPublic())
+                    .createdAt(updatedForm.getCreatedAt())
+                    .build();
             return ResponseEntity.ok(Map.of("message", "설문이 수정되었습니다", "form", response));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
