@@ -1,0 +1,144 @@
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
+body {
+    background: var(--form-bg-color);
+    margin: 0;
+    padding: 0;
+}
+
+.form-page-container,
+.preview-container {
+    width: 100%;
+    max-width: 770px;
+    margin: 10px auto;
+    padding: 0 16px;
+}
+
+.form-header {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    border-top: 10px solid var(--form-theme-color);
+    padding: 24px;
+    margin-bottom: 12px;
+}
+
+.form-header h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 12px;
+}
+
+/* 섹션 카드 */
+.section-block {
+    margin-bottom: 12px;
+    display: none;
+}
+
+.section-block.active {
+    display: block;
+}
+
+.section-block h5 {
+    background: var(--form-theme-color);
+    border-radius: 8px;
+    color: #fff;
+    padding: 12px 24px;
+}
+
+/* 질문 블록 */
+.question-block {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+.question-block .fw-semibold {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.question-block .form-check-label {
+    font-size: 14px;
+}
+
+.question-block input[type="text"],
+.question-block textarea,
+.question-block select {
+    border-radius: 4px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 8px 12px;
+    font-size: 15px;
+}
+
+.question-block textarea {
+    resize: vertical;
+}
+
+/* 라디오/체크박스 */
+.form-check {
+    margin-bottom: 6px;
+}
+
+.form-check-input:focus {
+    box-shadow: none;
+    background-color: var(--form-theme-color);
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.navigation-area {
+    padding: 10px;
+}
+
+#prevBtn,
+#nextBtn {
+    background: #fff;
+    min-width: 120px;
+    height: 40px;
+    font-size: 14px;
+}
+
+#prevBtn {
+    border: 1px solid rgb(218, 220, 224);
+}
+
+#nextBtn {
+    background: var(--form-theme-color);
+    border-color: var(--form-theme-color);
+}
+
+.question-card {
+    background: white;
+    border: 1px solid rgb(218, 220, 224);
+    border-top: 10px solid var(--form-theme-color);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 12px;
+}
+
+.question-card .fw-semibold {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.question-card input,
+.question-card textarea,
+.question-card select {
+    border-radius: 4px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 10px;
+}
