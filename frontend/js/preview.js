@@ -34,7 +34,7 @@ function renderSections() {
         const secDiv = document.createElement("div");
         secDiv.className = "section-block";
 
-        const secTitle = sec.title && sec.title.trim().length > 0 ? sec.title : `섹션 ${sec.order_num}`;
+        const secTitle = sec.title && sec.title.trim().length > 0 ? sec.title : ``;
 
         let html = `
             <h5 class="mb-3">${secTitle}</h5>
