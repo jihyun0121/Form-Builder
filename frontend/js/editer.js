@@ -28,20 +28,6 @@ const SETTINGS_TEMPLATES = {
         max: 5,
         labels: ["최소", "최대"],
     },
-    DATE: {
-        date_format: "YYYY-MM-DD",
-        include_time: false,
-    },
-    TIME: {
-        time_format: "HH:mm",
-        type: "time",
-    },
-    SLIDER: {
-        min: 0,
-        max: 100,
-        step: 1,
-        show_value: true,
-    },
     MATRIX_RADIO: {
         rows: ["행 1", "행 2"],
         columns: ["열 1", "열 2"],
@@ -52,10 +38,6 @@ const SETTINGS_TEMPLATES = {
         rows: ["행 1", "행 2"],
         columns: ["열 1", "열 2"],
         randomize_rows: false,
-    },
-    RANKING: {
-        options: ["옵션 1", "옵션 2"],
-        randomize_options: false,
     },
 };
 
@@ -281,70 +263,6 @@ function renderOptionSettings(card) {
             </div>
         `;
     }
-
-    if (type === "DATE") {
-        const s = {
-            date_format: settings.date_format || "YYYY-MM-DD",
-            include_time: settings.include_time || false,
-            validation: settings.validation || { type: "", condition: "", value: "" },
-        };
-
-        container.innerHTML = `
-            <div class="mb-2 d-flex align-items-center gap-2">
-                <span class="small">형식</span>
-                <select class="form-select form-select-sm opt-date-format" style="max-width:150px">
-                    <option value="YYYY-MM-DD" ${s.date_format === "YYYY-MM-DD" ? "selected" : ""}>YYYY-MM-DD</option>
-                    <option value="YYYY.MM.DD" ${s.date_format === "YYYY.MM.DD" ? "selected" : ""}>YYYY.MM.DD</option>
-                </select>
-                <div class="form-check ms-2">
-                    <input class="form-check-input opt-include-time" type="checkbox" ${s.include_time ? "checked" : ""}>
-                    <label class="form-check-label small">시간 포함</label>
-                </div>
-            </div>
-            <div class="mb-2">
-                <label class="form-label small mb-1">응답 확인</label>
-                <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm opt-date-condition" style="max-width:150px">
-                        <option value="">조건 없음</option>
-                        <option value="이후" ${s.validation.condition === "이후" ? "selected" : ""}>이후</option>
-                        <option value="이전" ${s.validation.condition === "이전" ? "selected" : ""}>이전</option>
-                        <option value="사이값" ${s.validation.condition === "사이값" ? "selected" : ""}>사이값</option>
-                    </select>
-                    <input type="text" class="form-control form-control-sm opt-date-value" placeholder="2025-01-01 또는 2025-01-01,2025-12-31" value="${s.validation.value || ""}">
-                </div>
-            </div>
-        `;
-    }
-
-    if (type === "TIME") {
-        const s = {
-            time_format: settings.time_format || "HH:mm",
-            type: settings.type || "time",
-        };
-
-        container.innerHTML = `
-            <div class="mb-2 d-flex align-items-center gap-2">
-                <span class="small">형식</span>
-                <select class="form-select form-select-sm opt-time-format" style="max-width:150px">
-                    <option value="HH:mm" ${s.time_format === "HH:mm" ? "selected" : ""}>HH:mm</option>
-                    <option value="HH:mm:ss" ${s.time_format === "HH:mm:ss" ? "selected" : ""}>HH:mm:ss</option>
-                </select>
-            </div>
-            <div class="mb-2">
-                <label class="form-label small mb-1">답변 유형</label>
-                <div class="d-flex gap-3 small">
-                    <div class="form-check">
-                        <input class="form-check-input opt-time-type" type="radio" name="timeType-${card.dataset.questionId}" value="time" ${s.type === "time" ? "checked" : ""}>
-                        <label class="form-check-label">시간</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input opt-time-type" type="radio" name="timeType-${card.dataset.questionId}" value="duration" ${s.type === "duration" ? "checked" : ""}>
-                        <label class="form-check-label">기간</label>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
 }
 
 function collectSettingsFromUI(card) {
@@ -401,25 +319,6 @@ function collectSettingsFromUI(card) {
         settings.min = Number(container.querySelector(".opt-scale-min")?.value || 1);
         settings.max = Number(container.querySelector(".opt-scale-max")?.value || 5);
         settings.labels = [container.querySelector(".opt-scale-label-min")?.value || "", container.querySelector(".opt-scale-label-max")?.value || ""];
-    }
-
-    if (type === "DATE") {
-        settings.date_format = container.querySelector(".opt-date-format")?.value || "YYYY-MM-DD";
-        settings.include_time = container.querySelector(".opt-include-time")?.checked || false;
-        const cond = container.querySelector(".opt-date-condition")?.value || "";
-        const val = container.querySelector(".opt-date-value")?.value || "";
-
-        settings.validation = {
-            type: "date",
-            condition: cond,
-            value: val,
-        };
-    }
-
-    if (type === "TIME") {
-        settings.time_format = container.querySelector(".opt-time-format")?.value || "HH:mm";
-        const checked = container.querySelector(".opt-time-type:checked");
-        settings.type = checked?.value || "time";
     }
 
     return settings;
@@ -544,11 +443,12 @@ function generateTempId(prefix) {
 
 function createQuestionBlock(initial = {}, insertAfter = null) {
     const card = document.createElement("div");
-    card.className = "card block-qeustion-card question-block";
+    card.className = "card block-question-card question-block";
     card.dataset.blockType = "question";
     card.dataset.questionId = initial.questionId || generateTempId("q");
 
-    card._settings = initial.settings || {};
+    // settings는 무조건 _settings 로 사용
+    card._settings = initial.settings || JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[initial.question_type || "SHORT_TEXT"]));
 
     const sectionId = initial.sectionId || firstSectionId;
     card.dataset.sectionId = sectionId;
@@ -556,10 +456,13 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
     card.innerHTML = `
         <div class="card-body">
             <span class="drag-handle"><i class="bi bi-three-dots"></i></span>
+
             <div class="question-header d-flex justify-content-between align-items-start">
                 <div class="question-left flex-grow-1">
                     <div class="editor-wrapper mb-1">
-                        <div class="question-text-input form-input-base editable" contenteditable="true" data-placeholder="질문">${initial.question_text || ""}</div>
+                        <div class="question-text-input form-input-base editable" 
+                             contenteditable="true" 
+                             data-placeholder="질문">${initial.question_text || ""}</div>
                         <div class="editor-toolbar small">
                             <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
                             <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
@@ -568,6 +471,7 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
                         </div>
                     </div>
                 </div>
+
                 <div class="question-right ms-3">
                     <select class="form-select form-select-sm question-type-select" style="min-width: 150px">
                         <option value="SHORT_TEXT">단답형</option>
@@ -576,14 +480,14 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
                         <option value="CHECKBOX">체크박스</option>
                         <option value="DROPDOWN">드롭다운</option>
                         <option value="SCALE">등급(척도)</option>
-                        <option value="DATE">날짜</option>
-                        <option value="TIME">시간</option>
                     </select>
                 </div>
             </div>
 
             <div class="editor-wrapper mb-2">
-                <div class="question-description-input form-input-base editable" contenteditable="true" data-placeholder="설명">${initial.description || ""}</div>
+                <div class="question-description-input form-input-base editable" 
+                     contenteditable="true" 
+                     data-placeholder="설명">${initial.description || ""}</div>
                 <div class="editor-toolbar small">
                     <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
                     <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
@@ -594,28 +498,47 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
                 </div>
             </div>
 
-            <div class="question-preview-area mt-3 mb-3">${renderPreview(initial.question_type || "SHORT_TEXT")}</div>
+            <div class="question-preview-area mt-3 mb-2"a>
+                ${renderPreview(initial.question_type || "SHORT_TEXT", card._settings)}
+            </div>
 
-            <div class="question-options-panel mt-2 d-none">
+            <!-- 옵션 리스트(Editor) -->
+            <div class="question-choice-editor mt-1"></div>
+
+            <!-- 추가 옵션 패널 -->
+            <div class="question-options-panel mt-3 d-none">
                 <div class="option-settings-container"></div>
             </div>
 
             <div class="question-footer d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
                 <div class="form-check form-switch">
-                    <input class="form-check-input question-required-switch" type="checkbox" ${initial.is_required ? "checked" : ""} />
+                    <input class="form-check-input question-required-switch" type="checkbox"
+                        ${initial.is_required ? "checked" : ""} />
                     <label class="form-check-label small">필수</label>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-danger btn-sm btn-delete"><i class="bi bi-trash"></i></button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary btn-options-toggle me-2"><i class="bi bi-three-dots"></i></button>
+                    <button type="button" class="btn btn-outline-danger btn-sm btn-delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-options-toggle me-2">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
                 </div>
             </div>
         </div>
     `;
 
-    attachQuestionEvents(card);
+    // 기본 타입 세팅
+    card.querySelector(".question-type-select").value = initial.question_type || "SHORT_TEXT";
 
+    // 이벤트 부착
+    attachQuestionEvents(card);
+    renderChoiceEditor(card);
+    attachChoiceOptionEvents(card);
+
+    // DOM에 삽입
     if (insertAfter) blocksContainer.insertBefore(card, insertAfter.nextElementSibling);
     else blocksContainer.appendChild(card);
 
@@ -671,31 +594,195 @@ function createSectionBlock(initial = {}) {
     updateDebug();
 }
 
-function renderPreview(type) {
-    switch (type) {
-        case "LONG_TEXT":
-            return `<textarea class="form-control form-control-sm" disabled placeholder="긴 답변"></textarea>`;
-        case "RADIO":
-            return `
-                <div class="form-check"><input class="form-check-input" type="radio" disabled><label class="form-input-base form-check-label small">옵션 1</label></div>
-                <div class="form-check"><input class="form-check-input" type="radio" disabled><label class="form-input-base form-check-label small">옵션 2</label></div>
-            `;
-        case "CHECKBOX":
-            return `
-                <div class="form-check"><input class="form-check-input" type="checkbox" disabled><label class="form-input-base form-check-label small">옵션 1</label></div>
-                <div class="form-check"><input class="form-check-input" type="checkbox" disabled><label class="form-input-base form-check-label small">옵션 2</label></div>
-            `;
-        case "DROPDOWN":
-            return `<select class="form-select form-select-sm" disabled><option>옵션 1</option><option>옵션 2</option></select>`;
-        case "SCALE":
-            return `<div class="small text-muted mb-1">1 ~ 5</div>`;
-        case "DATE":
-            return `<input type="date" class="form-control form-control-sm" disabled>`;
-        case "TIME":
-            return `<input type="time" class="form-control form-control-sm" disabled>`;
-        default:
-            return `<input type="text" disabled class="form-control form-control-sm" placeholder="단답형">`;
+function renderPreview(type, settings = {}) {
+    if (type === "LONG_TEXT") {
+        return `<textarea class="form-control form-control-sm" disabled placeholder="긴 답변"></textarea>`;
     }
+
+    if (type === "RADIO") {
+        const opts = settings.options && settings.options.length ? settings.options : ["옵션 1", "옵션 2"];
+        return opts
+            .map(
+                (label) => `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" disabled>
+                    <label class="form-input-base form-check-label small">${label}</label>
+                </div>
+            `
+            )
+            .join("");
+    }
+
+    if (type === "CHECKBOX") {
+        const opts = settings.options && settings.options.length ? settings.options : ["옵션 1", "옵션 2"];
+        return opts
+            .map(
+                (label) => `
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" disabled>
+                    <label class="form-input-base form-check-label small">${label}</label>
+                </div>
+            `
+            )
+            .join("");
+    }
+
+    if (type === "DROPDOWN") {
+        const opts = settings.options && settings.options.length ? settings.options : ["옵션 1", "옵션 2"];
+        return `
+            <select class="form-select form-select-sm" disabled>
+                ${opts.map((o) => `<option>${o}</option>`).join("")}
+            </select>
+        `;
+    }
+
+    if (type === "SCALE") {
+        const min = settings.min ?? 1;
+        const max = settings.max ?? 5;
+        const labels = settings.labels || ["매우 나쁨", "매우 좋음"];
+        return `
+            <div class="small text-muted mb-1">${min} ~ ${max}</div>
+            <div class="d-flex justify-content-between small text-muted">
+                <span>${labels[0] || ""}</span>
+                <span>${labels[1] || ""}</span>
+            </div>
+        `;
+    }
+
+    return `<input type="text" disabled class="form-control form-control-sm" placeholder="단답형">`;
+}
+
+function renderChoiceEditor(card) {
+    const type = card.querySelector(".question-type-select").value;
+    const container = card.querySelector(".question-choice-editor");
+
+    if (!container) return;
+
+    if (!["RADIO", "CHECKBOX", "DROPDOWN"].includes(type)) {
+        container.classList.add("d-none");
+        container.innerHTML = "";
+        return;
+    }
+
+    container.classList.remove("d-none");
+
+    if (!card._settings) {
+        card._settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[type]));
+    }
+    if (!card._settings.options || !card._settings.options.length) {
+        card._settings.options = ["옵션 1", "옵션 2"];
+    }
+
+    const opts = card._settings.options;
+
+    container.innerHTML = "";
+
+    opts.forEach((label, index) => {
+        const row = document.createElement("div");
+        row.className = "d-flex align-items-center mb-1 option-row";
+
+        let iconHTML = "";
+        if (type === "RADIO") {
+            iconHTML = `<span class="me-2 text-muted"><i class="bi bi-circle"></i></span>`;
+        } else if (type === "CHECKBOX") {
+            iconHTML = `<span class="me-2 text-muted"><i class="bi bi-square"></i></span>`;
+        } else {
+            iconHTML = `<span class="me-2 text-muted"><i class="bi bi-grip-vertical"></i></span>`;
+        }
+
+        row.innerHTML = `
+            ${iconHTML}
+            <input type="text"
+                   class="form-control form-control-sm flex-grow-1 option-label-input"
+                   value="${label}"
+                   placeholder="옵션 ${index + 1}">
+            <button type="button" class="btn btn-sm btn-link text-muted ms-1 btn-remove-option">
+                <i class="bi bi-x"></i>
+            </button>
+        `;
+
+        container.appendChild(row);
+    });
+
+    const addRow = document.createElement("div");
+    addRow.className = "mt-1";
+    addRow.innerHTML = `
+        <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none btn-add-option">
+            <span class="me-1">+</span>옵션 추가
+        </button>
+    `;
+    container.appendChild(addRow);
+}
+
+function syncOptionsFromDOM(card) {
+    const type = card.querySelector(".question-type-select").value;
+    if (!["RADIO", "CHECKBOX", "DROPDOWN"].includes(type)) return;
+
+    const container = card.querySelector(".question-choice-editor");
+    if (!container) return;
+
+    const labels = [...container.querySelectorAll(".option-label-input")].map((input) => input.value.trim()).filter((v) => v);
+
+    if (!card._settings) {
+        card._settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[type]));
+    }
+
+    card._settings.options = labels.length ? labels : ["옵션 1"];
+
+    const previewArea = card.querySelector(".question-preview-area");
+    if (previewArea) {
+        previewArea.innerHTML = renderPreview(type, card._settings);
+    }
+
+    const optionsPanel = card.querySelector(".question-options-panel");
+    if (optionsPanel && !optionsPanel.classList.contains("d-none")) {
+        renderOptionSettings(card);
+    }
+
+    const questionId = card.dataset.questionId;
+    if (questionId) {
+        FormAPI.updateQuestion(questionId, {
+            settings: card._settings,
+        });
+    }
+}
+
+function attachChoiceOptionEvents(card) {
+    const container = card.querySelector(".question-choice-editor");
+    if (!container) return;
+
+    container.addEventListener("input", (e) => {
+        if (e.target.classList.contains("option-label-input")) {
+            syncOptionsFromDOM(card);
+        }
+    });
+
+    container.addEventListener("click", (e) => {
+        const removeBtn = e.target.closest(".btn-remove-option");
+        const addBtn = e.target.closest(".btn-add-option");
+
+        if (removeBtn) {
+            const row = removeBtn.closest(".option-row");
+            if (row) row.remove();
+            syncOptionsFromDOM(card);
+            return;
+        }
+
+        if (addBtn) {
+            const type = card.querySelector(".question-type-select").value;
+            if (!["RADIO", "CHECKBOX", "DROPDOWN"].includes(type)) return;
+
+            if (!card._settings) {
+                card._settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[type]));
+            }
+            const opts = card._settings.options || [];
+            const newLabel = `옵션 ${opts.length + 1}`;
+            card._settings.options = [...opts, newLabel];
+
+            renderChoiceEditor(card);
+            syncOptionsFromDOM(card);
+        }
+    });
 }
 
 function openSettingsPanel(questionCard) {
@@ -745,15 +832,23 @@ function attachQuestionEvents(card) {
     });
 
     typeSelect.addEventListener("change", async () => {
-        card.querySelector(".question-preview-area").innerHTML = renderPreview(typeSelect.value);
+        const newType = typeSelect.value;
 
-        if (!card._settings) card._settings = {};
+        card._settings = JSON.parse(JSON.stringify(SETTINGS_TEMPLATES[newType] || {}));
+
+        const previewArea = card.querySelector(".question-preview-area");
+        if (previewArea) {
+            previewArea.innerHTML = renderPreview(newType, card._settings);
+        }
+
+        renderChoiceEditor(card);
+
         if (!optionsPanel.classList.contains("d-none")) {
             renderOptionSettings(card);
         }
 
         await FormAPI.updateQuestion(questionId, {
-            question_type: typeSelect.value,
+            question_type: newType,
             settings: card._settings,
         });
 
