@@ -351,7 +351,7 @@ if (blocksContainer) {
     new Sortable(blocksContainer, {
         animation: 150,
         handle: ".drag-handle",
-        ghostClass: "bg-light",
+        ghostClass: "bg-white",
         filter: "[data-block-type='section'], [data-block-type='title']",
         onEnd(evt) {
             const item = evt.item;
@@ -454,9 +454,7 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
             <div class="question-header d-flex justify-content-between align-items-start">
                 <div class="question-left flex-grow-1">
                     <div class="editor-wrapper mb-1">
-                        <div class="question-text-input form-input-base editable" 
-                             contenteditable="true" 
-                             data-placeholder="질문">${initial.question_text || ""}</div>
+                        <div class="question-text-input form-input-base editable" contenteditable="true" data-placeholder="질문">${initial.question_text || ""}</div>
                         <div class="editor-toolbar small">
                             <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
                             <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
@@ -479,9 +477,7 @@ function createQuestionBlock(initial = {}, insertAfter = null) {
             </div>
 
             <div class="editor-wrapper mb-2">
-                <div class="question-description-input form-input-base editable" 
-                     contenteditable="true" 
-                     data-placeholder="설명">${initial.description || ""}</div>
+                <div class="question-description-input form-input-base editable" contenteditable="true" data-placeholder="설명">${initial.description || ""}</div>
                 <div class="editor-toolbar small">
                     <button class="toolbar-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
                     <button class="toolbar-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>

@@ -130,7 +130,7 @@ function renderQuestionHTML(q) {
                                         type="radio" 
                                         name="q_${q.question_id}" 
                                         value="${num}" 
-                                        class="me-1">
+                                        class="form-check-input me-1">
                                     ${num}
                                 </label>
                             `;

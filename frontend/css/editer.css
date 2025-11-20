@@ -2,6 +2,11 @@
     display: none;
 }
 
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
 .builder-container {
     width: 100%;
     max-width: 770px;

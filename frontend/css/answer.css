@@ -38,6 +38,11 @@ body {
     margin-bottom: 12px;
 }
 
+.form-check-input:checked {
+    background-color: var(--form-theme-color);
+    border-color: var(--form-theme-color);
+}
+
 .section-block {
     margin-bottom: 12px;
     display: none;

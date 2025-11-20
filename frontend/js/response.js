@@ -2,6 +2,7 @@ let formsId = null;
 let responses = [];
 let responseDetails = {};
 let questions = [];
+let formStructure = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     initTabsUI();
@@ -72,9 +73,10 @@ async function loadResponses() {
 async function loadQuestions() {
     try {
         const structure = await FormAPI.getFormStructure(formsId);
+        formStructure = structure;
 
-        questions = structure.sections.flatMap((section) =>
-            section.questions.map((q) => ({
+        questions = (structure.sections || []).flatMap((section) =>
+            (section.questions || []).map((q) => ({
                 question_id: q.question_id,
                 text: q.question_text,
                 type: q.question_type,
@@ -85,12 +87,22 @@ async function loadQuestions() {
     }
 }
 
+function getQuestionMeta(questionId) {
+    if (!formStructure || !formStructure.sections) return null;
+
+    for (const sec of formStructure.sections) {
+        const found = (sec.questions || []).find((q) => q.question_id === questionId);
+        if (found) return found;
+    }
+    return null;
+}
+
 function renderSummaryTab() {
     const area = document.getElementById("responses");
     area.innerHTML = "";
 
     if (responses.length === 0) {
-        area.innerHTML = `<div class="text-center text-muted">아직 응답이 없습니다.</div>`;
+        area.innerHTML = `<div class="text-center text-muted-none">아직 응답이 없습니다.</div>`;
         return;
     }
 
@@ -98,7 +110,7 @@ function renderSummaryTab() {
 
     questions.forEach((q) => {
         area.innerHTML += `
-            <div class="p-3 mb-3 border rounded bg-light">
+            <div class="p-3 mb-3 border rounded bg-white">
                 <div class="fw-bold">${q.text}</div>
                 <div class="small text-muted">${q.type}</div>
             </div>
@@ -123,8 +135,9 @@ function setupQuestionTab() {
         if (currentIndex < 0) currentIndex = questions.length - 1;
         if (currentIndex >= questions.length) currentIndex = 0;
 
-        select.value = questions[currentIndex].question_id;
-        showResponsesByQuestion(questions[currentIndex].question_id);
+        const qId = questions[currentIndex].question_id;
+        select.value = qId;
+        showResponsesByQuestion(qId);
     }
 
     prevBtn.addEventListener("click", () => moveQuestion(-1));
@@ -141,26 +154,127 @@ function setupQuestionTab() {
     function showResponsesByQuestion(questionId) {
         area.innerHTML = "";
 
-        const results = responses
-            .map((r) => responseDetails[r.response_id]?.find((a) => a.question_id === questionId))
-            .filter(Boolean)
-            .map((a) => a.answer_data);
-
-        if (results.length === 0) {
-            area.innerHTML = `<div class="text-muted">응답 없음</div>`;
+        const meta = getQuestionMeta(questionId);
+        if (!meta) {
+            area.innerHTML = `<div class="text-muted-none">질문 정보를 찾을 수 없습니다.</div>`;
             return;
         }
 
-        area.innerHTML = results
-            .map(
-                (a, i) => `
-                <div class="mb-2 bg-white res-card">
-                    <div class="fw-semibold small mb-1">응답 ${i + 1}</div>
-                    <div class="small" style="margin-top: 10px; border-bottom: 1px solid rgba(0, 0, 0, 0.12)">${extractValue(a)}</div>
+        const settings = meta.settings || {};
+        const options = settings.options || [];
+
+        const answers = responses.map((r) => responseDetails[r.response_id]?.find((a) => a.question_id === questionId)).filter(Boolean);
+
+        if (answers.length === 0) {
+            area.innerHTML = `<div class="text-muted-none">응답 없음</div>`;
+            return;
+        }
+
+        let html = `
+            <div class="res-card mb-3 bg-white">
+                <div class="fw-semibold mb-1">${meta.question_text}</div>
+                ${meta.description ? `<div class="small text-muted mb-2">${meta.description}</div>` : ""}
+                <div class="badge bg-white text-dark border small">${meta.question_type}</div>
+            </div>
+        `;
+
+        answers.forEach((ans, idx) => {
+            const data = ans.answer_data;
+            let body = "";
+
+            switch (meta.question_type) {
+                case "SHORT_TEXT":
+                case "LONG_TEXT":
+                    body = `
+                    <input type="text" class="form-control" value="${data.text || ""}" disabled>
+                `;
+                    break;
+
+                case "RADIO":
+                    body = options
+                        .map((opt) => {
+                            return `
+                                <div class="form-check mb-1">
+                                    <input class="form-check-input"
+                                        type="radio"
+                                        name="radio_${questionId}_${idx}"
+                                        value="${opt}"
+                                        ${opt === data.selected_option ? "checked" : ""}
+                                        disabled>
+                                    <label class="form-check-label">${opt}</label>
+                                </div>
+                            `;
+                        })
+                        .join("");
+                    break;
+
+                case "CHECKBOX":
+                    body = options
+                        .map((opt) => {
+                            return `
+                            <div class="form-check mb-1">
+                                <input class="form-check-input"
+                                    type="checkbox"
+                                    value="${opt}"
+                                    ${data.selected_options?.includes(opt) ? "checked" : ""}
+                                    disabled>
+                                <label class="form-check-label">${opt}</label>
+                            </div>
+                        `;
+                        })
+                        .join("");
+                    break;
+
+                case "DROPDOWN":
+                    body = `
+                    <select class="form-select" disabled>
+                        ${options
+                            .map(
+                                (opt) => `
+                                <option ${opt === data.selected_option ? "selected" : ""}>
+                                    ${opt}
+                                </option>`
+                            )
+                            .join("")}
+                    </select>
+                `;
+                    break;
+
+                case "SCALE":
+                    const min = settings.min ?? 1;
+                    const max = settings.max ?? 5;
+
+                    body = `
+                    <div class="d-flex justify-content-between">
+                        ${Array.from({ length: max - min + 1 }, (_, i) => {
+                            const num = i + min;
+                            return `
+                                <label class="d-flex align-items-center">
+                                    <input
+                                        type="radio"
+                                        name="scale_${questionId}_${idx}"
+                                        value="${num}"
+                                        ${data.score === num ? "checked" : ""}
+                                        class="form-check-input me-2"
+                                        disabled>
+                                    ${num}
+                                </label>
+                            `;
+                        }).join("")}
+                    </div>
+                `;
+                    break;
+            }
+
+            html += `
+                <div class="res-card mb-2 bg-white">
+                    <div class="fw-semibold small mb-1">응답 ${idx + 1}</div>
+                    <div class="mt-1">${body}</div>
                 </div>
-            `
-            )
-            .join("");
+            `;
+        });
+
+        area.innerHTML = html;
     }
 }
 
@@ -179,84 +293,193 @@ function setupIndividualTab() {
     const numInput = document.getElementById("responseNumber");
     const totalText = document.getElementById("totalResponseCountText");
     const area = document.getElementById("singleResponseDetail");
+    const deleteBtn = document.getElementById("deleteResponseBtn");
 
     totalText.textContent = ` / ${responses.length}`;
 
     const prevBtn = document.getElementById("prevResponseBtn");
     const nextBtn = document.getElementById("nextResponseBtn");
 
+    let currentIndex = 0;
+
     function moveResponse(step) {
         if (responses.length === 0) return;
 
-        let num = Number(numInput.value) + step;
+        currentIndex += step;
+        if (currentIndex < 0) currentIndex = responses.length - 1;
+        if (currentIndex >= responses.length) currentIndex = 0;
 
-        if (num < 1) num = responses.length;
-        if (num > responses.length) num = 1;
-
-        numInput.value = num;
-        showSingleResponse(num);
+        numInput.value = currentIndex + 1;
+        showSingleResponse(currentIndex);
     }
 
     prevBtn.addEventListener("click", () => moveResponse(-1));
     nextBtn.addEventListener("click", () => moveResponse(1));
 
-    numInput.addEventListener("input", () => showSingleResponse(numInput.value));
+    numInput.addEventListener("input", () => {
+        let num = Number(numInput.value);
+        if (isNaN(num) || num < 1 || num > responses.length) return;
+        currentIndex = num - 1;
+        showSingleResponse(currentIndex);
+    });
 
-    function showSingleResponse(num) {
-        const idx = num - 1;
+    deleteBtn?.addEventListener("click", async () => {
+        if (responses.length === 0) return;
+
+        const r = responses[currentIndex];
+        if (!r) return;
+
+        if (!confirm("이 응답을 삭제하시겠습니까?")) return;
+
+        try {
+            await FormAPI.deleteResponse(r.response_id);
+
+            responses.splice(currentIndex, 1);
+            delete responseDetails[r.response_id];
+
+            document.getElementById("totalResponses").textContent = responses.length;
+            totalText.textContent = ` / ${responses.length}`;
+
+            if (responses.length === 0) {
+                area.innerHTML = `<div class="text-muted small">응답이 모두 삭제되었습니다.</div>`;
+                numInput.value = "";
+                return;
+            }
+
+            if (currentIndex >= responses.length) currentIndex = responses.length - 1;
+            numInput.value = currentIndex + 1;
+            showSingleResponse(currentIndex);
+        } catch (err) {
+            console.error("응답 삭제 실패:", err);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    });
+
+    function showSingleResponse(idx) {
         const r = responses[idx];
-
         if (!r) {
-            area.innerHTML = `<div class="text-muted small">응답 없음</div>`;
+            area.innerHTML = `<div class="text-muted-none small">응답 없음</div>`;
             return;
         }
 
-        const detail = responseDetails[r.response_id];
+        const detail = responseDetails[r.response_id] || [];
+        area.innerHTML = "";
 
-        const questionMap = Object.fromEntries(questions.map((q) => [q.question_id, q.text]));
+        detail.forEach((d) => {
+            const meta = getQuestionMeta(d.question_id);
+            if (!meta) return;
 
-        area.innerHTML = `
-            ${detail
-                .map((d) => {
-                    const qText = questionMap[d.question_id] || "(삭제된 질문)";
-                    return `
-                    <div class=" mb-2 bg-light res-card">
-                        <div class="fw-semibold small">${qText}</div>
-                        <div class="small" style="margin-top: 10px; border-bottom: 1px solid rgba(0, 0, 0, 0.12)">${extractValue(d.answer_data)}</div>
-                    </div>`;
-                })
-                .join("")}
-        `;
+            const qText = meta.question_text || "(삭제된 질문)";
+            const qType = meta.question_type;
+            const settings = meta.settings || {};
+            const options = settings.options || [];
+            const answer = d.answer_data;
 
-        document.getElementById("deleteResponseBtn").addEventListener("click", async () => {
-            if (!confirm("이 응답을 삭제하시겠습니까?")) return;
+            let inputHTML = "";
 
-            try {
-                await FormAPI.deleteResponse(r.response_id);
+            switch (qType) {
+                case "SHORT_TEXT":
+                case "LONG_TEXT":
+                    inputHTML = `
+                    <input type="text" class="form-control" value="${answer.text || ""}" disabled>
+                `;
+                    break;
 
-                responses.splice(idx, 1);
-                delete responseDetails[r.response_id];
+                case "RADIO":
+                    inputHTML = options
+                        .map(
+                            (opt) => `
+                        <div class="form-check mb-1">
+                            <input class="form-check-input"
+                                type="radio"
+                                name="single_radio_${d.question_id}_${idx}"
+                                value="${opt}"
+                                ${answer.selected_option === opt ? "checked" : ""}
+                                disabled>
+                            <label class="form-check-label">${opt}</label>
+                        </div>
+                    `
+                        )
+                        .join("");
+                    break;
 
-                document.getElementById("totalResponses").textContent = responses.length;
-                totalText.textContent = ` / ${responses.length}`;
+                case "CHECKBOX":
+                    inputHTML = options
+                        .map(
+                            (opt) => `
+                        <div class="form-check mb-1">
+                            <input class="form-check-input"
+                                type="checkbox"
+                                value="${opt}"
+                                ${answer.selected_options?.includes(opt) ? "checked" : ""}
+                                disabled>
+                            <label class="form-check-label">${opt}</label>
+                        </div>
+                    `
+                        )
+                        .join("");
+                    break;
 
-                if (responses.length === 0) {
-                    area.innerHTML = `<div class="text-muted small">응답이 모두 삭제되었습니다.</div>`;
-                    return;
+                case "DROPDOWN":
+                    inputHTML = `
+                    <select class="form-select" disabled>
+                        ${options
+                            .map(
+                                (opt) => `
+                            <option ${opt === answer.selected_option ? "selected" : ""}>
+                                ${opt}
+                            </option>
+                        `
+                            )
+                            .join("")}
+                    </select>
+                `;
+                    break;
+
+                case "SCALE": {
+                    const min = settings.min ?? 1;
+                    const max = settings.max ?? 5;
+
+                    inputHTML = `
+                    <div class="d-flex justify-content-between">
+                        ${Array.from({ length: max - min + 1 }, (_, i) => {
+                            const num = i + min;
+                            return `
+                                <label>
+                                    <input
+                                        type="radio"
+                                        name="single_scale_${d.question_id}_${idx}"
+                                        value="${num}"
+                                        ${answer.score === num ? "checked" : ""}
+                                        class="form-check-input me-2"
+                                        disabled>
+                                    ${num}
+                                </label>
+                            `;
+                        }).join("")}
+                    </div>
+                `;
+                    break;
                 }
 
-                let nextNum = num;
-                if (nextNum > responses.length) nextNum = responses.length;
-
-                numInput.value = nextNum;
-
-                showSingleResponse(nextNum);
-            } catch (err) {
-                console.error("응답 삭제 실패:", err);
-                alert("삭제 중 오류가 발생했습니다.");
+                default:
+                    inputHTML = `
+                    <div class="p-3 bg-white">${extractValue(answer) || "(미응답)"}</div>
+                `;
             }
+
+            area.innerHTML += `
+            <div class="res-card mb-3 p-3 bg-white">
+                <div class="fw-semibold">${qText}</div>
+                <div class="mt-2">${inputHTML}</div>
+            </div>
+        `;
         });
     }
 
-    if (responses.length > 0) showSingleResponse(1);
+    if (responses.length > 0) {
+        currentIndex = 0;
+        numInput.value = 1;
+        showSingleResponse(0);
+    }
 }

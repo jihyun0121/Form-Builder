@@ -111,3 +111,31 @@
     border: 1px solid rgb(218, 220, 224);
     padding: 24px;
 }
+
+.text-muted-none {
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 12px;
+    background: #fff;
+    text-align: center;
+
+}
+
+.form-check-input {
+    opacity: 100;
+}
+
+.form-check-input:disabled {
+    opacity: 100;
+}
+
+.form-check-input:checked {
+    background-color: var(--form-theme-color);
+    border-color: var(--form-theme-color);
+}
+
+.form-check-input:disabled~.form-check-label,
+.form-check-input[disabled]~.form-check-label {
+    cursor: default;
+    opacity: 100;
+}

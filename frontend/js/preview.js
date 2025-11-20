@@ -115,7 +115,7 @@ function renderQuestionHTML(q) {
                             const num = i + min;
                             return `
                                 <label>
-                                    <input type="radio" name="scale_${q.question_id}" class="me-1">${num}
+                                    <input type="radio" name="scale_${q.question_id}" class="form-check-input me-1">${num}
                                 </label>
                             `;
                         }).join("")}
