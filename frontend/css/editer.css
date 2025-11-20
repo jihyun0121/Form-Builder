@@ -12,6 +12,10 @@
 .drag-handle {
     cursor: grab;
     color: #9e9e9e;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .drag-handle:hover {
