@@ -1,0 +1,110 @@
+:root {
+    --form-theme-color: #673ab7;
+    --form-bg-color: #f0ebf8;
+}
+
+/* 페이지 전체 */
+body {
+    background: var(--form-bg-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* 가운데 정렬 컨테이너 */
+.form-page-container {
+    width: 100%;
+    max-width: 770px;
+    margin: 20px auto;
+    padding: 0 16px;
+}
+
+/* 헤더 카드 */
+.form-header {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    border-top: 10px solid var(--form-theme-color);
+    padding: 24px;
+    margin-bottom: 12px;
+}
+
+.form-header h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.form-header p {
+    color: #555;
+    font-size: 15px;
+}
+
+/* 섹션 영역 */
+.section-block {
+    display: none;
+    margin-bottom: 12px;
+}
+
+.section-block.active {
+    display: block;
+}
+
+/* 섹션 타이틀 */
+.section-block h5 {
+    background: var(--form-theme-color);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* 질문 카드 */
+.question-block {
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 22px;
+    margin-bottom: 18px;
+}
+
+.question-block .fw-semibold {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.question-block input,
+.question-block textarea,
+.question-block select {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid rgb(218, 220, 224);
+    padding: 10px;
+    font-size: 15px;
+}
+
+.form-check {
+    margin-bottom: 6px;
+}
+
+.navigation-area {
+    padding: 16px 4px 30px;
+}
+
+#prevBtn,
+#nextBtn {
+    min-width: 120px;
+    height: 40px;
+    font-size: 14px;
+}
+
+#prevBtn {
+    background: #fff;
+    border: 1px solid rgb(218, 220, 224);
+}
+
+
+#nextBtn {
+    background: var(--form-theme-color);
+    border-color: var(--form-theme-color);
+}
