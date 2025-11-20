@@ -16,6 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    const formId = new URLSearchParams(location.search).get("formId");
+    if (!formId) return;
+
     const settings = {
         modifyResponse: document.getElementById("modifyResponse"),
         limitOneResponse: document.getElementById("limitOneResponse"),
@@ -24,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
         defaultRequired: document.getElementById("defaultRequired"),
     };
 
-    function saveSettings() {
+    async function saveSettingsToDB() {
         const data = {
             modifyResponse: settings.modifyResponse.checked,
             limitOneResponse: settings.limitOneResponse.checked,
@@ -33,22 +36,28 @@ document.addEventListener("DOMContentLoaded", () => {
             defaultRequired: settings.defaultRequired.checked,
         };
 
-        localStorage.setItem("form-settings", JSON.stringify(data));
+        try {
+            await FormAPI.updateForm(formId, { settings: data });
+            console.log("✔ 설정 DB에 저장됨:", data);
+        } catch (err) {
+            console.error("설정 저장 실패:", err);
+        }
     }
 
     function loadSettings() {
-        const saved = JSON.parse(localStorage.getItem("form-settings") || "{}");
+        const form = window.currentForm;
+        if (!form?.settings) return;
 
-        settings.modifyResponse.checked = saved.modifyResponse || false;
-        settings.limitOneResponse.checked = saved.limitOneResponse || false;
-        settings.submitMessage.value = saved.submitMessage || "";
-        settings.showAnotherLink.checked = saved.showAnotherLink || false;
-        settings.defaultRequired.checked = saved.defaultRequired || false;
+        settings.modifyResponse.checked = form.settings.modifyResponse || false;
+        settings.limitOneResponse.checked = form.settings.limitOneResponse || false;
+        settings.submitMessage.value = form.settings.submitMessage || "";
+        settings.showAnotherLink.checked = form.settings.showAnotherLink || false;
+        settings.defaultRequired.checked = form.settings.defaultRequired || false;
     }
 
     Object.values(settings).forEach((el) => {
-        el?.addEventListener("input", saveSettings);
-        el?.addEventListener("change", saveSettings);
+        el?.addEventListener("input", saveSettingsToDB);
+        el?.addEventListener("change", saveSettingsToDB);
     });
 
     loadSettings();

@@ -14,7 +14,7 @@
 
     <body>
         <div>
-            <nav class="navbar navbar-light bg-white px-2">
+            <nav class="navbar navbar-light bg-white">
                 <a class="navbar-brand d-flex align-items-center" href="/frontend/html/">
                     <i class="bi bi-ui-checks-grid fs-4"></i>
                 </a>
@@ -68,24 +68,12 @@
                     </div>
 
                     <div class="dropdown">
-                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="게시">
+                        <button class="icon-btn" data-bs-toggle="dropdown" id="publishToggleBtn">
                             <i class="bi bi-upload"></i>
                         </button>
 
                         <div class="dropdown-menu small">
-                            <button class="dropdown-item" id="manageFormBtn">관리</button>
-                            <button class="dropdown-item" id="shareFormBtn">공유</button>
-                        </div>
-                    </div>
-
-                    <div class="dropdown">
-                        <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="더보기">
-                            <i class="bi bi-three-dots"></i>
-                        </button>
-
-                        <div class="dropdown-menu small">
-                            <button class="btn btn-outline-danger btn-sm" id="deleteAllResponsesBtn"><i class="bi bi-trash"></i>휴지통으로 이동</button>
-                            <button class="dropdown-item" id="unpublishBtn">게시 취소</button>
+                            <button class="dropdown-item" id="publishToggleAction"></button>
                         </div>
                     </div>
                 </div>
@@ -136,12 +124,12 @@
                         <button id="addQuestionBtn" class="btn btn-outline-primary"><i class="bi bi-plus-lg me-1"></i> 질문 추가</button>
                     </section>
 
-                    <section class="mt-4">
+                    <!-- <section class="mt-4">
                         <details>
                             <summary class="small text-muted mb-1" style="cursor: pointer">현재 폼 구조(JSON) 보기</summary>
                             <pre id="debugOutput" class="bg-dark text-light p-3 rounded small mt-2" style="max-height: 260px; overflow: auto"></pre>
                         </details>
-                    </section>
+                    </section> -->
 
                     <aside class="floating-menu d-none bg-white d-md-flex flex-column">
                         <button class="floating-btn" id="sideAddQuestionBtn" aria-label="질문 추가" data-tooltip="질문 추가">
@@ -163,7 +151,7 @@
                                 <span class="response-title">응답 <span id="totalResponses">0</span>개</span>
                             </div>
 
-                            <div class="dropdown">
+                            <!-- <div class="dropdown">
                                 <button class="icon-btn" data-bs-toggle="dropdown" data-tooltip="더보기">
                                     <i class="bi bi-three-dots"></i>
                                 </button>
@@ -171,10 +159,10 @@
                                     <button class="dropdown-item py-2" id="downloadCsvBtn"><i class="bi bi-file-earmark-arrow-down me-2"></i> CSV 다운로드</button>
                                     <button class="dropdown-item py-2 text-danger" id="deleteAllResponsesBtn"><i class="bi bi-trash me-2"></i> 모든 응답 삭제</button>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
 
-                        <div class="response-page bg-white border-bottom">
+                        <div class="response-page bg-white border-bottom" response-titles>
                             <nav class="tab-page">
                                 <button class="page-btn active fw-semibold" data-page="responses">요약</button>
                                 <button class="page-btn fw-semibold" data-page="question">질문</button>
@@ -191,40 +179,43 @@
                     </div>
 
                     <div id="question" class="responses-tab">
-                        <div class="d-flex align-items-center mb-3">
-                            <label class="me-2 small fw-semibold">질문 선택:</label>
-                            <select id="questionSelect" class="form-select form-select-sm w-auto"></select>
-                        </div>
+                        <div class="d-flex justify-content-between response-titles">
+                            <div class="d-flex align-items-center mb-3">
+                                <label class="me-2 small fw-semibold">질문 선택:</label>
+                                <select id="questionSelect" class="form-select form-select-sm w-auto"></select>
+                            </div>
 
-                        <div class="d-flex align-items-center gap-2 mb-3">
-                            <button class="btn btn-outline-secondary btn-sm" id="prevQuestionBtn">
-                                <i class="bi bi-chevron-left"></i>
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm" id="nextQuestionBtn">
-                                <i class="bi bi-chevron-right"></i>
-                            </button>
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <button class="btn btn-outline-secondary btn-sm" id="prevQuestionBtn">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" id="nextQuestionBtn">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div id="questionResponseArea" class="mt-3"></div>
                     </div>
 
                     <div id="response" class="responses-tab">
-                        <div class="d-flex align-items-center mb-3">
-                            <input id="responseNumber" type="number" class="form-control form-control-sm w-auto me-2" min="1" value="1" />
-                            <span class="small" id="totalResponseCountText"> / 0</span>
+                        <div class="d-flex justify-content-between response-titles">
+                            <div class="d-flex align-items-center mb-3">
+                                <input id="responseNumber" type="number" class="form-control form-control-sm w-auto me-2" min="1" value="1" />
+                                <span class="small" id="totalResponseCountText"> / 0</span>
 
-                            <div class="ms-3 d-flex gap-2">
-                                <button class="btn btn-outline-secondary btn-sm" id="prevResponseBtn">
-                                    <i class="bi bi-chevron-left"></i>
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm" id="nextResponseBtn">
-                                    <i class="bi bi-chevron-right"></i>
-                                </button>
+                                <div class="ms-3 d-flex gap-2">
+                                    <button class="btn btn-outline-secondary btn-sm" id="prevResponseBtn">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" id="nextResponseBtn">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                </div>
                             </div>
+
+                            <button class="btn btn-outline-danger btn-sm mb-3" id="deleteResponseBtn"><i class="bi bi-trash"></i></button>
                         </div>
-
-                        <button class="btn btn-outline-danger btn-sm mb-3" id="deleteSingleResponseBtn"><i class="bi bi-trash me-1"></i> 이 응답 삭제</button>
-
                         <div id="singleResponseDetail" class="mt-3"></div>
                     </div>
                 </div>
